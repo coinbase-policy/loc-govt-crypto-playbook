@@ -1,0 +1,1269 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>StateScan — Coinbase Policy</title>
+<style>
+  :root {
+    --cb-blue: #0052FF;
+    --cb-blue-dark: #0039B3;
+    --cb-blue-light: #E8F0FF;
+    --cb-blue-50: #F5F8FF;
+    --cb-gray-900: #0A0B0D;
+    --cb-gray-700: #5B616E;
+    --cb-gray-500: #8A919E;
+    --cb-gray-300: #D8DCE0;
+    --cb-gray-100: #F2F4F7;
+    --cb-gray-50: #F9FAFB;
+    --cb-white: #FFFFFF;
+    --cb-green: #00875A;
+    --cb-red: #CF202F;
+    --cb-yellow: #F5B82E;
+    --cb-tier-1a: #CF202F;
+    --cb-tier-1b: #F5B82E;
+    --cb-tier-2: #0052FF;
+    --cb-tier-3: #8A919E;
+    --cb-tier-none: #F2F4F7;
+    --radius: 12px;
+    --radius-sm: 8px;
+    --shadow-sm: 0 1px 2px rgba(10,11,13,0.04), 0 1px 3px rgba(10,11,13,0.06);
+    --shadow-md: 0 4px 12px rgba(10,11,13,0.06), 0 2px 4px rgba(10,11,13,0.04);
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, "Inter", "SF Pro Display", "Segoe UI", Roboto, sans-serif;
+    color: var(--cb-gray-900);
+    background: var(--cb-gray-50);
+    font-size: 14px;
+    line-height: 1.5;
+    -webkit-font-smoothing: antialiased;
+  }
+  .header {
+    background: var(--cb-white);
+    border-bottom: 1px solid var(--cb-gray-300);
+    padding: 0 32px;
+    display: flex; align-items: center; justify-content: space-between;
+    height: 64px; position: sticky; top: 0; z-index: 100;
+  }
+  .logo { display: flex; align-items: center; gap: 10px; font-weight: 700; font-size: 18px; letter-spacing: -0.3px; }
+  .logo-mark {
+    width: 28px; height: 28px; background: var(--cb-blue); border-radius: 50%;
+    display: flex; align-items: center; justify-content: center; color: white; font-weight: 700; font-size: 14px;
+  }
+  .nav { display: flex; gap: 32px; align-items: center; }
+  .nav a { text-decoration: none; color: var(--cb-gray-700); font-weight: 500; font-size: 14px;
+    padding: 8px 0; border-bottom: 2px solid transparent; cursor: pointer; }
+  .nav a:hover { color: var(--cb-gray-900); }
+  .nav a.active { color: var(--cb-blue); border-bottom-color: var(--cb-blue); }
+  .header-right { display: flex; align-items: center; gap: 16px; }
+  .user-avatar {
+    width: 32px; height: 32px; background: var(--cb-blue-light); color: var(--cb-blue);
+    border-radius: 50%; display: flex; align-items: center; justify-content: center;
+    font-weight: 600; font-size: 13px; cursor: pointer;
+  }
+  .main { max-width: 1400px; margin: 0 auto; padding: 32px; }
+  .page-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 24px; }
+  .page-title { display: flex; align-items: baseline; gap: 12px; flex-wrap: wrap; }
+  .page-title h1 { font-size: 28px; font-weight: 700; letter-spacing: -0.5px; }
+  .record-count { background: var(--cb-blue-light); color: var(--cb-blue); padding: 4px 12px; border-radius: 20px; font-size: 13px; font-weight: 600; }
+  .data-source-pill {
+    background: rgba(245,184,46,0.15); color: #92400E;
+    padding: 4px 10px; border-radius: 12px; font-size: 11px; font-weight: 600;
+    display: inline-flex; align-items: center; gap: 4px;
+  }
+  .live-indicator { display: inline-flex; align-items: center; gap: 6px; color: var(--cb-green); font-size: 12px; font-weight: 500; }
+  .live-dot { width: 8px; height: 8px; background: var(--cb-green); border-radius: 50%; animation: pulse 2s infinite; }
+  @keyframes pulse { 0%,100%{opacity:1;} 50%{opacity:0.4;} }
+
+  .toolbar {
+    display: flex; align-items: center; gap: 12px;
+    background: var(--cb-white); padding: 16px;
+    border-radius: var(--radius); box-shadow: var(--shadow-sm);
+    margin-bottom: 16px; flex-wrap: wrap;
+  }
+  .search-box {
+    display: flex; align-items: center; gap: 8px;
+    background: var(--cb-gray-50); border: 1px solid var(--cb-gray-300);
+    border-radius: var(--radius-sm); padding: 8px 12px; flex: 1; min-width: 220px; max-width: 280px;
+  }
+  .search-box input { border: none; background: transparent; outline: none; font-size: 14px; width: 100%; }
+  .filter-select { background: var(--cb-white); border: 1px solid var(--cb-gray-300); border-radius: var(--radius-sm); padding: 8px 12px; font-size: 14px; cursor: pointer; font-weight: 500; }
+  .filter-select:hover { border-color: var(--cb-blue); }
+  .toggle-pill { display: inline-flex; align-items: center; gap: 8px; padding: 8px 12px; border-radius: 20px; font-size: 13px; font-weight: 500; color: var(--cb-gray-700); cursor: pointer; }
+  .toggle-switch { position: relative; width: 32px; height: 18px; background: var(--cb-gray-300); border-radius: 10px; transition: 0.2s; cursor: pointer; flex-shrink: 0; }
+  .toggle-switch::after { content: ''; position: absolute; top: 2px; left: 2px; width: 14px; height: 14px; background: white; border-radius: 50%; transition: 0.2s; }
+  .toggle-switch.on { background: var(--cb-blue); }
+  .toggle-switch.on::after { left: 16px; }
+  .btn { padding: 8px 16px; border-radius: var(--radius-sm); font-size: 14px; font-weight: 600; cursor: pointer; border: none; display: inline-flex; align-items: center; gap: 6px; }
+  .btn-secondary { background: var(--cb-white); color: var(--cb-gray-900); border: 1px solid var(--cb-gray-300); }
+  .btn-secondary:hover { border-color: var(--cb-blue); color: var(--cb-blue); }
+  .btn-primary { background: var(--cb-blue); color: white; }
+  .btn-primary:hover { background: var(--cb-blue-dark); }
+  .btn-success { background: var(--cb-green); color: white; }
+  .btn-sm { padding: 6px 12px; font-size: 13px; }
+
+  .view-tabs { display: inline-flex; background: var(--cb-gray-100); border-radius: var(--radius-sm); padding: 4px; gap: 2px; }
+  .view-tab { padding: 6px 14px; border-radius: 6px; font-size: 13px; font-weight: 500; color: var(--cb-gray-700); cursor: pointer; border: none; background: transparent; }
+  .view-tab.active { background: var(--cb-white); color: var(--cb-gray-900); box-shadow: var(--shadow-sm); }
+
+  .tier-badge { display: inline-flex; align-items: center; justify-content: center; min-width: 36px; padding: 4px 10px; border-radius: 6px; font-size: 12px; font-weight: 700; color: white; }
+  .tier-1a { background: var(--cb-tier-1a); }
+  .tier-1b { background: var(--cb-tier-1b); color: var(--cb-gray-900); }
+  .tier-2 { background: var(--cb-tier-2); }
+  .tier-3 { background: var(--cb-tier-3); }
+  .tier-none { background: var(--cb-gray-100); color: var(--cb-gray-500); }
+
+  .map-layout { display: grid; grid-template-columns: 1fr 320px; gap: 16px; }
+  .map-card { background: var(--cb-white); border-radius: var(--radius); box-shadow: var(--shadow-sm); padding: 24px; position: relative; }
+  .map-header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 16px; gap: 16px; flex-wrap: wrap; }
+  .map-title { font-size: 16px; font-weight: 600; }
+  .map-subtitle { font-size: 13px; color: var(--cb-gray-500); margin-top: 2px; }
+
+  .map-mode-toggle { display: inline-flex; background: var(--cb-gray-100); border-radius: var(--radius-sm); padding: 4px; gap: 2px; border: 1px solid var(--cb-gray-300); }
+  .mode-btn { padding: 8px 16px; border-radius: 6px; font-size: 13px; font-weight: 600; color: var(--cb-gray-700); cursor: pointer; border: none; background: transparent; display: inline-flex; align-items: center; gap: 6px; }
+  .mode-btn:hover { color: var(--cb-gray-900); }
+  .mode-btn.active { background: var(--cb-white); color: var(--cb-blue); box-shadow: var(--shadow-sm); }
+  .mode-btn .mode-dot { width: 8px; height: 8px; border-radius: 50%; background: var(--cb-gray-500); }
+  .mode-btn[data-mode="volume"].active .mode-dot { background: var(--cb-blue); }
+  .mode-btn[data-mode="priority"].active .mode-dot { background: var(--cb-tier-1a); }
+
+  .map-controls { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 12px; }
+  .map-control-btn { background: var(--cb-gray-100); border: none; padding: 6px 12px; border-radius: var(--radius-sm); font-size: 12px; font-weight: 500; color: var(--cb-gray-700); cursor: pointer; }
+  .map-control-btn:hover { background: var(--cb-blue-light); color: var(--cb-blue); }
+  .map-control-btn.active { background: var(--cb-blue); color: white; }
+
+  #usMapContainer { width: 100%; min-height: 520px; position: relative; background: var(--cb-gray-50); border-radius: var(--radius-sm); overflow: hidden; }
+  #usMapContainer svg { width: 100% !important; height: auto !important; display: block; }
+  #usMapContainer path { stroke: var(--cb-white); stroke-width: 0.8; cursor: pointer; transition: stroke-width 0.15s, filter 0.15s, fill 0.3s; }
+  #usMapContainer path:hover { stroke: var(--cb-gray-900); stroke-width: 1.75; filter: brightness(0.92); }
+  #usMapContainer path.selected { stroke: var(--cb-gray-900); stroke-width: 2.25; }
+  #usMapContainer path.has-data { stroke: #FFD700; stroke-width: 1.5; filter: drop-shadow(0 0 4px rgba(255,215,0,0.4)); }
+
+  .state-label-overlay { position: absolute; pointer-events: none; font-size: 10px; font-weight: 700; color: var(--cb-gray-900); text-shadow: 0 0 3px rgba(255,255,255,0.95), 0 0 2px rgba(255,255,255,0.95); transform: translate(-50%, -50%); white-space: nowrap; text-align: center; }
+  .state-label-overlay.dark { color: white; text-shadow: 0 0 3px rgba(0,0,0,0.5); }
+  .state-label-overlay .lbl-count { font-size: 9px; font-weight: 600; opacity: 0.95; display: block; margin-top: 1px; }
+
+  .map-loading { position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; background: rgba(255,255,255,0.6); z-index: 5; color: var(--cb-gray-500); font-size: 13px; }
+
+  .map-tooltip { position: absolute; background: var(--cb-gray-900); color: white; padding: 10px 14px; border-radius: var(--radius-sm); font-size: 13px; pointer-events: none; opacity: 0; transition: opacity 0.15s; z-index: 10; box-shadow: var(--shadow-md); min-width: 200px; max-width: 240px; }
+  .map-tooltip.show { opacity: 1; }
+  .tooltip-state { font-weight: 700; font-size: 14px; margin-bottom: 4px; }
+  .tooltip-row { display: flex; justify-content: space-between; align-items: center; font-size: 12px; color: #B3CCFF; margin-bottom: 4px; }
+  .tooltip-topic { font-size: 11px; color: var(--cb-gray-300); border-top: 1px solid rgba(255,255,255,0.15); padding-top: 6px; margin-top: 4px; }
+  .tooltip-bills-pill { display: inline-block; background: var(--cb-yellow); color: var(--cb-gray-900); padding: 2px 6px; border-radius: 4px; font-size: 10px; font-weight: 700; margin-top: 4px; }
+
+  .map-legend { display: flex; align-items: center; justify-content: space-between; margin-top: 24px; padding-top: 16px; border-top: 1px solid var(--cb-gray-100); flex-wrap: wrap; gap: 16px; }
+  .legend-scale-group, .legend-tier-buckets { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; }
+  .legend-label { font-size: 12px; font-weight: 600; color: var(--cb-gray-700); }
+  .legend-buckets { display: flex; gap: 2px; align-items: center; }
+  .legend-bucket { display: flex; flex-direction: column; align-items: center; gap: 4px; }
+  .legend-swatch { width: 36px; height: 14px; }
+  .legend-bucket-label { font-size: 10px; color: var(--cb-gray-500); font-weight: 500; }
+  .legend-tier { display: flex; align-items: center; gap: 6px; font-size: 12px; color: var(--cb-gray-700); font-weight: 500; }
+  .legend-tier-swatch { width: 16px; height: 16px; border-radius: 4px; }
+  .legend-counts-toggle { display: flex; align-items: center; gap: 8px; }
+
+  .map-side-panel { background: var(--cb-white); border-radius: var(--radius); box-shadow: var(--shadow-sm); padding: 20px; height: fit-content; }
+  .panel-title { font-size: 14px; font-weight: 600; margin-bottom: 4px; }
+  .panel-subtitle { font-size: 12px; color: var(--cb-gray-500); margin-bottom: 16px; }
+  .ranking-list { display: flex; flex-direction: column; gap: 10px; }
+  .ranking-row { display: grid; grid-template-columns: 24px 1fr auto; align-items: center; gap: 10px; padding: 8px; border-radius: var(--radius-sm); cursor: pointer; }
+  .ranking-row:hover { background: var(--cb-blue-50); }
+  .ranking-rank { font-size: 12px; font-weight: 700; color: var(--cb-gray-500); }
+  .ranking-state-name { font-size: 13px; font-weight: 600; }
+  .ranking-bar { height: 6px; background: var(--cb-gray-100); border-radius: 3px; overflow: hidden; flex: 1; }
+  .ranking-bar-fill { height: 100%; border-radius: 3px; }
+  .ranking-count { font-size: 13px; font-weight: 700; color: var(--cb-blue); min-width: 24px; text-align: right; }
+  .panel-divider { border-top: 1px solid var(--cb-gray-100); margin: 16px 0; }
+  .tier-summary-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 12px; }
+  .tier-summary-card { padding: 10px; border-radius: var(--radius-sm); cursor: pointer; transition: transform 0.15s; }
+  .tier-summary-card:hover { transform: translateY(-2px); }
+  .tier-summary-card .tier-label { font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 4px; }
+  .tier-summary-card .tier-states { font-size: 22px; font-weight: 700; }
+  .tier-summary-card .tier-desc { font-size: 11px; margin-top: 2px; opacity: 0.85; }
+  .tsc-1a { background: rgba(207,32,47,0.1); color: var(--cb-tier-1a); }
+  .tsc-1b { background: rgba(245,184,46,0.15); color: #92400E; }
+  .tsc-2 { background: rgba(0,82,255,0.08); color: var(--cb-tier-2); }
+  .tsc-3 { background: rgba(138,145,158,0.15); color: var(--cb-tier-3); }
+
+  /* BILLS VIEW */
+  .bills-header-card {
+    background: linear-gradient(135deg, var(--cb-blue-50) 0%, var(--cb-white) 100%);
+    border-radius: var(--radius); box-shadow: var(--shadow-sm);
+    padding: 20px 24px; margin-bottom: 16px;
+    display: flex; justify-content: space-between; align-items: center; gap: 16px; flex-wrap: wrap;
+  }
+  .bills-header-meta { display: flex; gap: 16px; align-items: center; flex-wrap: wrap; }
+  .meta-stat { display: flex; flex-direction: column; }
+  .meta-stat-label { font-size: 11px; color: var(--cb-gray-500); font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; }
+  .meta-stat-value { font-size: 20px; font-weight: 700; color: var(--cb-gray-900); margin-top: 2px; }
+  .sync-status { display: flex; flex-direction: column; gap: 4px; align-items: flex-end; }
+  .sync-time { font-size: 12px; color: var(--cb-gray-500); }
+
+  .state-filter-pills { display: flex; gap: 8px; margin-bottom: 16px; flex-wrap: wrap; align-items: center; }
+  .state-pill {
+    background: var(--cb-white); border: 1px solid var(--cb-gray-300);
+    padding: 8px 14px; border-radius: 20px; font-size: 13px; font-weight: 600;
+    cursor: pointer; display: inline-flex; align-items: center; gap: 6px;
+    transition: all 0.15s;
+  }
+  .state-pill:hover { border-color: var(--cb-blue); color: var(--cb-blue); }
+  .state-pill.active { background: var(--cb-blue); color: white; border-color: var(--cb-blue); }
+  .state-pill .pill-count { background: rgba(255,255,255,0.25); padding: 2px 8px; border-radius: 10px; font-size: 11px; font-weight: 700; }
+  .state-pill:not(.active) .pill-count { background: var(--cb-gray-100); color: var(--cb-gray-700); }
+
+  .bills-table-card { background: var(--cb-white); border-radius: var(--radius); box-shadow: var(--shadow-sm); overflow: hidden; }
+  .bills-table { width: 100%; border-collapse: collapse; }
+  .bills-table th { text-align: left; padding: 12px 16px; font-size: 11px; font-weight: 700; color: var(--cb-gray-500); text-transform: uppercase; letter-spacing: 0.5px; background: var(--cb-gray-50); border-bottom: 1px solid var(--cb-gray-300); cursor: pointer; user-select: none; }
+  .bills-table th:hover { color: var(--cb-blue); }
+  .bills-table td { padding: 14px 16px; border-bottom: 1px solid var(--cb-gray-100); font-size: 13px; vertical-align: middle; }
+  .bills-table tr { cursor: pointer; transition: background 0.1s; }
+  .bills-table tr:hover { background: var(--cb-blue-50); }
+  .bills-table tr:last-child td { border-bottom: none; }
+  .bill-cell-id { font-weight: 700; color: var(--cb-gray-900); display: block; }
+  .bill-cell-sponsor { font-size: 11px; color: var(--cb-gray-500); margin-top: 2px; display: inline-block; background: var(--cb-gray-100); padding: 2px 8px; border-radius: 4px; }
+  .bill-cell-title { color: var(--cb-gray-900); line-height: 1.4; max-width: 360px; }
+  .topic-tag { display: inline-block; background: var(--cb-blue); color: white; padding: 3px 8px; border-radius: 10px; font-size: 10px; font-weight: 600; margin: 2px 3px 2px 0; }
+  .topic-tag.prediction { background: #7C3AED; }
+  .topic-tag.bitcoin { background: #F59E0B; }
+  .topic-tag.digital-assets { background: var(--cb-blue); }
+  .topic-tag.unclaimed { background: #0891B2; }
+  .topic-tag.stablecoin { background: var(--cb-green); }
+  .topic-tag.banking { background: #6366F1; }
+  .topic-tag.staking { background: #DB2777; }
+  .topic-tag.mt { background: #475569; }
+  .topic-tag.custody { background: #0EA5E9; }
+  .status-tag { display: inline-block; padding: 4px 10px; border-radius: 6px; font-size: 11px; font-weight: 600; }
+  .status-1st { background: #FEF3C7; color: #92400E; }
+  .status-2nd { background: #DBEAFE; color: #1E40AF; }
+  .status-passed { background: #D1FAE5; color: #065F46; }
+  .status-signed { background: #E0E7FF; color: #3730A3; }
+  .status-committee { background: #FEF3C7; color: #92400E; }
+  .status-introduced { background: #F3F4F6; color: #4B5563; }
+  .empty-state { padding: 60px 24px; text-align: center; color: var(--cb-gray-500); }
+
+  /* BILL DETAIL MODAL/PANEL */
+  .bill-detail-modal {
+    position: fixed; inset: 0; background: rgba(10,11,13,0.5);
+    z-index: 200; display: none; align-items: center; justify-content: center;
+    padding: 24px;
+  }
+  .bill-detail-modal.show { display: flex; }
+  .bill-detail-content {
+    background: white; border-radius: var(--radius);
+    max-width: 900px; width: 100%; max-height: 90vh;
+    overflow-y: auto; box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+  }
+  .bill-detail-hero { background: linear-gradient(135deg, var(--cb-blue) 0%, var(--cb-blue-dark) 100%); color: white; padding: 28px 32px; border-radius: var(--radius) var(--radius) 0 0; position: relative; }
+  .bill-detail-close { position: absolute; top: 16px; right: 16px; background: rgba(255,255,255,0.15); border: none; color: white; width: 32px; height: 32px; border-radius: 50%; cursor: pointer; font-size: 18px; }
+  .bill-detail-close:hover { background: rgba(255,255,255,0.25); }
+  .bill-detail-state { font-size: 13px; opacity: 0.85; margin-bottom: 8px; }
+  .bill-detail-id { font-size: 28px; font-weight: 700; margin-bottom: 6px; }
+  .bill-detail-title { font-size: 18px; font-weight: 600; line-height: 1.4; opacity: 0.95; }
+  .bill-detail-body { padding: 24px 32px; }
+  .detail-section { margin-bottom: 24px; }
+  .detail-section h3 { font-size: 12px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; color: var(--cb-gray-500); margin-bottom: 8px; }
+  .detail-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+  .detail-card-mini { background: var(--cb-gray-50); padding: 12px; border-radius: var(--radius-sm); }
+  .detail-card-mini-label { font-size: 11px; color: var(--cb-gray-500); font-weight: 600; text-transform: uppercase; }
+  .detail-card-mini-value { font-size: 14px; font-weight: 600; color: var(--cb-gray-900); margin-top: 4px; }
+  .ai-summary-box {
+    background: var(--cb-blue-50); border-left: 3px solid var(--cb-blue);
+    padding: 14px 16px; border-radius: var(--radius-sm); font-size: 13px;
+    line-height: 1.6; color: var(--cb-gray-900);
+  }
+  .ai-badge { background: var(--cb-blue); color: white; padding: 2px 8px; border-radius: 10px; font-size: 10px; font-weight: 700; margin-right: 6px; }
+
+  .view-section { display: none; }
+  .view-section.active { display: block; }
+  .legend-mode { display: none; }
+  .legend-mode.active { display: flex; }
+  .panel-mode { display: none; }
+  .panel-mode.active { display: block; }
+  .placeholder-view { background: var(--cb-white); border-radius: var(--radius); box-shadow: var(--shadow-sm); padding: 60px; text-align: center; color: var(--cb-gray-500); }
+
+  @media (max-width: 1100px) { .map-layout { grid-template-columns: 1fr; } }
+  @media (max-width: 900px) { .main { padding: 16px; } .nav { display: none; } #usMapContainer { min-height: 380px; } .detail-grid { grid-template-columns: 1fr; } }
+</style>
+</head>
+<body>
+
+<header class="header">
+  <div class="logo">
+    <div class="logo-mark">C</div>
+    StateScan
+    <span style="font-weight: 400; color: var(--cb-gray-500); font-size: 13px; margin-left: 4px;">by Coinbase Policy</span>
+  </div>
+  <div class="header-right">
+    <span style="font-size: 13px; color: var(--cb-gray-500);">State Policy Team</span>
+    <div class="user-avatar" title="Darin Carter">DC</div>
+  </div>
+</header>
+
+<main class="main">
+
+  <div class="page-header">
+    <div class="page-title">
+      <h1>Legislative</h1>
+      <span class="record-count" id="recordCount">— Records</span>
+      <span class="data-source-pill">⚡ LegiScan Demo Data</span>
+      <span class="live-indicator"><span class="live-dot"></span><span id="lastSync">Synced 2 min ago</span></span>
+    </div>
+    <div style="display: flex; gap: 8px;">
+      <button class="btn btn-secondary" onclick="refreshData()">↻ Refresh from LegiScan</button>
+      <button class="btn btn-primary">+ Add Keyword</button>
+    </div>
+  </div>
+
+  <section id="map-view" class="view-section active">
+    <div class="map-layout">
+      <div class="map-card">
+        <div class="map-header">
+          <div>
+            <div class="map-title" id="mapTitle">Engagement Priority by State</div>
+            <div class="map-subtitle" id="mapSubtitle">Beat the States priority tiering · Gold border = live LegiScan data available</div>
+          </div>
+          <div class="map-mode-toggle">
+            <button class="mode-btn" data-mode="volume" onclick="setMapMode('volume')"><span class="mode-dot"></span>Bill Volume</button>
+            <button class="mode-btn active" data-mode="priority" onclick="setMapMode('priority')"><span class="mode-dot"></span>Engagement Priority</button>
+          </div>
+        </div>
+
+        <div id="usMapContainer">
+          <div class="map-loading" id="mapLoading">Loading map…</div>
+        </div>
+
+        <div id="mapTooltip" class="map-tooltip">
+          <div class="tooltip-state" id="ttState">—</div>
+          <div class="tooltip-row"><span>Bills tracked</span><strong id="ttCount" style="color: white;">—</strong></div>
+          <div class="tooltip-row"><span>State Tier</span><span id="ttTier">—</span></div>
+          <div class="tooltip-topic" id="ttTopic">—</div>
+        </div>
+
+        <div class="map-legend">
+          <div class="legend-scale-group legend-mode" data-mode="volume">
+            <span class="legend-label">Bill Volume:</span>
+            <div class="legend-buckets">
+              <div class="legend-bucket"><div class="legend-swatch" style="background:#F2F4F7;"></div><span class="legend-bucket-label">0</span></div>
+              <div class="legend-bucket"><div class="legend-swatch" style="background:#E8F0FF;"></div><span class="legend-bucket-label">1–4</span></div>
+              <div class="legend-bucket"><div class="legend-swatch" style="background:#B3CCFF;"></div><span class="legend-bucket-label">5–9</span></div>
+              <div class="legend-bucket"><div class="legend-swatch" style="background:#4D85FF;"></div><span class="legend-bucket-label">10–14</span></div>
+              <div class="legend-bucket"><div class="legend-swatch" style="background:#0052FF;"></div><span class="legend-bucket-label">15–24</span></div>
+              <div class="legend-bucket"><div class="legend-swatch" style="background:#0039B3;"></div><span class="legend-bucket-label">25+</span></div>
+            </div>
+          </div>
+          <div class="legend-tier-buckets legend-mode active" data-mode="priority">
+            <span class="legend-label">State Tier:</span>
+            <div class="legend-tier"><div class="legend-tier-swatch" style="background: var(--cb-tier-1a);"></div>1A · Active</div>
+            <div class="legend-tier"><div class="legend-tier-swatch" style="background: var(--cb-tier-1b);"></div>1B · High</div>
+            <div class="legend-tier"><div class="legend-tier-swatch" style="background: var(--cb-tier-2);"></div>2 · Monitor</div>
+            <div class="legend-tier"><div class="legend-tier-swatch" style="background: var(--cb-tier-3);"></div>3 · Awareness</div>
+            <div class="legend-tier"><div class="legend-tier-swatch" style="background: var(--cb-tier-none); border: 1px solid var(--cb-gray-300);"></div>None</div>
+          </div>
+          <div style="display: flex; gap: 16px; align-items: center;">
+            <div class="legend-counts-toggle"><span class="toggle-switch on" id="labelsToggle"></span><span style="font-size: 13px;">State Labels</span></div>
+          </div>
+        </div>
+      </div>
+
+      <div>
+        <div class="map-side-panel">
+          <div class="panel-mode" data-mode="volume">
+            <div class="panel-title">Top States by Volume</div>
+            <div class="panel-subtitle">2026 session · Crypto-relevant bills</div>
+            <div class="ranking-list" id="rankingList"></div>
+          </div>
+          <div class="panel-mode active" data-mode="priority">
+            <div class="panel-title">Beat the States — Priority Map</div>
+            <div class="panel-subtitle">CB strategic engagement tiering</div>
+            <div class="tier-summary-grid" id="tierSummary"></div>
+            <div class="panel-divider"></div>
+            <div style="background: rgba(245,184,46,0.1); border-left: 3px solid var(--cb-yellow); padding: 12px; border-radius: 6px; margin-bottom: 16px;">
+              <div style="font-size: 12px; font-weight: 700; color: #92400E; margin-bottom: 4px;">⚡ LIVE DATA AVAILABLE</div>
+              <div style="font-size: 12px; color: var(--cb-gray-700);">CA, MD, NV pulled from LegiScan. Click any to drill into bills.</div>
+              <button class="btn btn-secondary btn-sm" style="margin-top: 8px;" onclick="showView('bills-view')">View Bills →</button>
+            </div>
+            <div class="panel-title" style="color: var(--cb-tier-1a);">Tier 1A — Active Engagement</div>
+            <div class="panel-subtitle">Lobbyists retained · Direct lobbying · Testimony</div>
+            <div class="ranking-list" id="tier1aList"></div>
+            <div class="panel-divider"></div>
+            <div class="panel-title" style="color: #92400E;">Tier 1B — High Priority</div>
+            <div class="panel-subtitle">Coalition support · Hearing testimony</div>
+            <div class="ranking-list" id="tier1bList"></div>
+            <div class="panel-divider"></div>
+            <div class="panel-title" style="color: var(--cb-tier-2);">Tier 2 — Monitor Closely</div>
+            <div class="panel-subtitle">Watch list · Trigger-based engagement</div>
+            <div class="ranking-list" id="tier2List"></div>
+          </div>
+          <div class="panel-divider"></div>
+          <div class="panel-title">Selected: <span id="selectedState" style="color: var(--cb-blue);">All States</span></div>
+          <div class="panel-subtitle" id="selectedDetail">Click any state on the map to filter the bill list and see top sponsors.</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- BILLS VIEW -->
+  <section id="bills-view" class="view-section">
+    <div class="bills-header-card">
+      <div class="bills-header-meta">
+        <div class="meta-stat">
+          <span class="meta-stat-label">Total Bills</span>
+          <span class="meta-stat-value" id="totalBillsStat">—</span>
+        </div>
+        <div class="meta-stat">
+          <span class="meta-stat-label">States Loaded</span>
+          <span class="meta-stat-value">3 of 50</span>
+        </div>
+        <div class="meta-stat">
+          <span class="meta-stat-label">Source</span>
+          <span class="meta-stat-value" style="font-size: 14px; color: var(--cb-gray-700);">LegiScan API</span>
+        </div>
+      </div>
+      <div class="sync-status">
+        <button class="btn btn-success btn-sm" onclick="refreshData()">↻ Refresh from LegiScan</button>
+        <span class="sync-time" id="syncTimeBills">Last sync: 2 min ago</span>
+      </div>
+    </div>
+
+    <div class="state-filter-pills">
+      <span style="font-size: 13px; color: var(--cb-gray-500); font-weight: 600; margin-right: 4px;">Filter by state:</span>
+      <button class="state-pill active" data-state="all" onclick="filterBills('all')">All <span class="pill-count" id="pillCountAll">0</span></button>
+      <button class="state-pill" data-state="CA" onclick="filterBills('CA')">🇨🇦 California <span class="pill-count" id="pillCountCA">0</span></button>
+      <button class="state-pill" data-state="MD" onclick="filterBills('MD')">🇲🇩 Maryland <span class="pill-count" id="pillCountMD">0</span></button>
+      <button class="state-pill" data-state="NV" onclick="filterBills('NV')">🇳🇻 Nevada <span class="pill-count" id="pillCountNV">0</span></button>
+    </div>
+
+    <div class="bills-table-card">
+      <table class="bills-table" id="billsTable">
+        <thead>
+          <tr>
+            <th onclick="sortBills('state')">State</th>
+            <th onclick="sortBills('bill_number')">Bill</th>
+            <th onclick="sortBills('status')">Status</th>
+            <th>Title</th>
+            <th>Topics</th>
+            <th onclick="sortBills('last_action_date')">Last Action</th>
+          </tr>
+        </thead>
+        <tbody id="billsTableBody"></tbody>
+      </table>
+    </div>
+  </section>
+
+  <section id="priorities-view" class="view-section"><div class="placeholder-view">Priorities view — State + Bill tier tables (preserved)</div></section>
+
+</main>
+
+<!-- BILL DETAIL MODAL -->
+<div class="bill-detail-modal" id="billDetailModal" onclick="if(event.target===this)closeBillDetail()">
+  <div class="bill-detail-content" id="billDetailContent"></div>
+</div>
+
+<script>
+  // ============================================================
+  // STATE PRIORITY DATA
+  // ============================================================
+  const stateData = {
+    CA:{name:"California",count:32,tier:"1A",topTopic:"State Banks (Valencia)",hasLiveData:true},
+    TX:{name:"Texas",count:22,tier:"1A",topTopic:"Bitcoin Reserve (HB 1885)"},
+    NY:{name:"New York",count:28,tier:"1A",topTopic:"Prediction Markets"},
+    FL:{name:"Florida",count:19,tier:"1A",topTopic:"Bitcoin Reserve"},
+    IA:{name:"Iowa",count:9,tier:"1A",topTopic:"Prediction Markets (SF 2470)"},
+    NC:{name:"North Carolina",count:15,tier:"1A",topTopic:"Unclaimed Property (HB 311)"},
+    MD:{name:"Maryland",count:12,tier:"1A",topTopic:"Staking + Stablecoin",hasLiveData:true},
+    PA:{name:"Pennsylvania",count:18,tier:"1A",topTopic:"Bitcoin Reserve · Swing State"},
+    AZ:{name:"Arizona",count:14,tier:"1B",topTopic:"Bitcoin Reserve"},
+    OH:{name:"Ohio",count:11,tier:"1B",topTopic:"Bitcoin · Crypto-curious"},
+    GA:{name:"Georgia",count:11,tier:"1B",topTopic:"Mayors (Dickens)"},
+    VA:{name:"Virginia",count:12,tier:"1B",topTopic:"Stablecoin Framework"},
+    IL:{name:"Illinois",count:10,tier:"1B",topTopic:"Stablecoin (DOI)"},
+    MI:{name:"Michigan",count:14,tier:"1B",topTopic:"Money Transmission"},
+    MN:{name:"Minnesota",count:13,tier:"1B",topTopic:"Twin Cities Mayors"},
+    WI:{name:"Wisconsin",count:12,tier:"1B",topTopic:"Staking (AB 224)"},
+    WY:{name:"Wyoming",count:8,tier:"1B",topTopic:"SPDI Charter Pioneer"},
+    LA:{name:"Louisiana",count:11,tier:"1B",topTopic:"Unclaimed Property (HB 947)"},
+    CO:{name:"Colorado",count:9,tier:"2",topTopic:"Digital Assets"},
+    NV:{name:"Nevada",count:8,tier:"2",topTopic:"Stablecoin",hasLiveData:true},
+    NH:{name:"New Hampshire",count:5,tier:"2",topTopic:"Bitcoin Reserve"},
+    NJ:{name:"New Jersey",count:13,tier:"2",topTopic:"Unclaimed Property"},
+    KY:{name:"Kentucky",count:8,tier:"2",topTopic:"Unclaimed Property"},
+    SC:{name:"South Carolina",count:9,tier:"2",topTopic:"Staking"},
+    TN:{name:"Tennessee",count:9,tier:"2",topTopic:"Crypto-friendly"},
+    UT:{name:"Utah",count:7,tier:"2",topTopic:"Digital Assets"},
+    WA:{name:"Washington",count:11,tier:"2",topTopic:"DFI Engagement"},
+    MA:{name:"Massachusetts",count:7,tier:"2",topTopic:"Stablecoin"},
+    OR:{name:"Oregon",count:6,tier:"2",topTopic:"Stablecoin"},
+    NM:{name:"New Mexico",count:5,tier:"2",topTopic:"Digital Assets"},
+    DE:{name:"Delaware",count:3,tier:"2",topTopic:"Corporate Domicile"},
+    AL:{name:"Alabama",count:6,tier:"3",topTopic:"Digital Assets"},
+    AR:{name:"Arkansas",count:4,tier:"3",topTopic:"Mining"},
+    CT:{name:"Connecticut",count:5,tier:"3",topTopic:"Stablecoin"},
+    HI:{name:"Hawaii",count:4,tier:"3",topTopic:"Digital Assets"},
+    ID:{name:"Idaho",count:4,tier:"3",topTopic:"Mining"},
+    IN:{name:"Indiana",count:7,tier:"3",topTopic:"Digital Assets"},
+    KS:{name:"Kansas",count:6,tier:"3",topTopic:"Digital Assets"},
+    MS:{name:"Mississippi",count:5,tier:"3",topTopic:"Bitcoin"},
+    MO:{name:"Missouri",count:6,tier:"3",topTopic:"Digital Assets"},
+    MT:{name:"Montana",count:3,tier:"3",topTopic:"Mining"},
+    NE:{name:"Nebraska",count:4,tier:"3",topTopic:"Digital Assets"},
+    OK:{name:"Oklahoma",count:7,tier:"3",topTopic:"Bitcoin"},
+    SD:{name:"South Dakota",count:3,tier:"3",topTopic:"Digital Assets"},
+    WV:{name:"West Virginia",count:3,tier:"3",topTopic:"Digital Assets"},
+    AK:{name:"Alaska",count:1,tier:"none",topTopic:"Minimal session activity"},
+    ME:{name:"Maine",count:2,tier:"none",topTopic:"Minimal activity"},
+    ND:{name:"North Dakota",count:2,tier:"none",topTopic:"Minimal activity"},
+    RI:{name:"Rhode Island",count:3,tier:"none",topTopic:"Limited activity"},
+    VT:{name:"Vermont",count:2,tier:"none",topTopic:"Minimal activity"},
+    DC:{name:"District of Columbia",count:0,tier:"none",topTopic:"Federal jurisdiction"}
+  };
+
+  // ============================================================
+  // LEGISCAN DEMO DATA — CA, MD, NV crypto bills
+  // Structure mirrors actual LegiScan API response
+  // Bills based on real 2025-2026 session crypto legislation patterns
+  // ============================================================
+  const legiscanBills = [
+    // CALIFORNIA
+    {
+      bill_id: 1873421, state: "CA", bill_number: "SB 1208", session: "2025-2026",
+      title: "State-Chartered Banks: Digital Financial Assets and Custody Authority",
+      description: "Authorizes California state-chartered banks to hold, custody, and provide services for digital financial assets, subject to DFPI rulemaking. Establishes a special purpose depository institution pathway and clarifies trust company authority for digital asset custody.",
+      sponsor: "Sen. Valencia (D)", sponsor_party: "D", sponsor_chamber: "Senate",
+      status: "Senate B&FI Committee", status_class: "status-committee", status_date: "2026-04-22",
+      last_action: "Hearing scheduled", last_action_date: "2026-05-04",
+      topics: [{label:"State Banks",cls:"banking"},{label:"Digital Assets",cls:"digital-assets"},{label:"Custody",cls:"custody"}],
+      cb_stance: "Monitor", cb_tier: "1A",
+      url: "https://leginfo.legislature.ca.gov/faces/billNavClient.xhtml?bill_id=20252026SB1208"
+    },
+    {
+      bill_id: 1851234, state: "CA", bill_number: "AB 1052", session: "2025-2026",
+      title: "Digital Financial Assets Law: Money Transmission Amendments",
+      description: "Amends the Digital Financial Assets Law (DFAL) to refine money transmission licensing requirements for digital asset businesses, including expanded compliance obligations for stablecoin issuers operating in California.",
+      sponsor: "Asm. Haney (D)", sponsor_party: "D", sponsor_chamber: "Assembly",
+      status: "Assembly B&F Committee", status_class: "status-committee", status_date: "2026-04-15",
+      last_action: "Re-referred to committee", last_action_date: "2026-04-30",
+      topics: [{label:"DFAL",cls:"digital-assets"},{label:"Money Transmission",cls:"mt"},{label:"Stablecoin",cls:"stablecoin"}],
+      cb_stance: "Engage", cb_tier: "1A",
+      url: "https://leginfo.legislature.ca.gov/faces/billNavClient.xhtml?bill_id=20252026AB1052"
+    },
+    {
+      bill_id: 1842156, state: "CA", bill_number: "SB 401", session: "2025-2026",
+      title: "Digital Financial Asset Transaction Kiosks: Consumer Protection",
+      description: "Establishes consumer protection requirements for digital financial asset transaction kiosks (crypto ATMs), including transaction limits, disclosure mandates, and licensing requirements for kiosk operators.",
+      sponsor: "Sen. Limón (D)", sponsor_party: "D", sponsor_chamber: "Senate",
+      status: "2nd Chamber", status_class: "status-2nd", status_date: "2026-03-28",
+      last_action: "Passed Senate, referred to Assembly", last_action_date: "2026-04-12",
+      topics: [{label:"Consumer Protection",cls:"digital-assets"},{label:"Money Transmission",cls:"mt"}],
+      cb_stance: "Monitor", cb_tier: "2",
+      url: "https://leginfo.legislature.ca.gov/faces/billNavClient.xhtml?bill_id=20252026SB401"
+    },
+    {
+      bill_id: 1839845, state: "CA", bill_number: "AB 39", session: "2025-2026",
+      title: "Digital Financial Assets Law: Implementation and Enforcement",
+      description: "Amends DFAL implementation timelines and clarifies enforcement authority for the Department of Financial Protection and Innovation (DFPI) over digital asset businesses operating in California.",
+      sponsor: "Asm. Grayson (D)", sponsor_party: "D", sponsor_chamber: "Assembly",
+      status: "Signed", status_class: "status-signed", status_date: "2026-02-10",
+      last_action: "Chaptered by Secretary of State", last_action_date: "2026-02-15",
+      topics: [{label:"DFAL",cls:"digital-assets"}],
+      cb_stance: "Implemented", cb_tier: "1A",
+      url: "https://leginfo.legislature.ca.gov/faces/billNavClient.xhtml?bill_id=20252026AB39"
+    },
+    {
+      bill_id: 1856782, state: "CA", bill_number: "AB 1124", session: "2025-2026",
+      title: "Tokenized Securities and Blockchain-Based Recordkeeping",
+      description: "Authorizes California businesses to maintain corporate records and issue tokenized securities on blockchain networks, subject to Department of Corporations oversight.",
+      sponsor: "Asm. Wicks (D)", sponsor_party: "D", sponsor_chamber: "Assembly",
+      status: "1st Chamber", status_class: "status-1st", status_date: "2026-03-10",
+      last_action: "Read first time", last_action_date: "2026-03-10",
+      topics: [{label:"Tokenization",cls:"digital-assets"},{label:"Securities",cls:"banking"}],
+      cb_stance: "Support", cb_tier: "2",
+      url: "https://leginfo.legislature.ca.gov/faces/billNavClient.xhtml?bill_id=20252026AB1124"
+    },
+    {
+      bill_id: 1862334, state: "CA", bill_number: "SB 720", session: "2025-2026",
+      title: "Unclaimed Digital Assets and Property Reform",
+      description: "Modernizes California's unclaimed property statutes to address digital assets held by exchanges and custodians, establishing a 5-year dormancy period and clarifying liquidation requirements.",
+      sponsor: "Sen. Wahab (D)", sponsor_party: "D", sponsor_chamber: "Senate",
+      status: "Committee", status_class: "status-committee", status_date: "2026-04-05",
+      last_action: "Referred to Judiciary Committee", last_action_date: "2026-04-18",
+      topics: [{label:"Unclaimed Property",cls:"unclaimed"},{label:"Digital Assets",cls:"digital-assets"}],
+      cb_stance: "Engage", cb_tier: "1B",
+      url: "https://leginfo.legislature.ca.gov/faces/billNavClient.xhtml?bill_id=20252026SB720"
+    },
+
+    // MARYLAND
+    {
+      bill_id: 1923456, state: "MD", bill_number: "HB 1268", session: "2026",
+      title: "Digital Asset Staking and Self-Custody Protections Act",
+      description: "Establishes that digital asset staking does not constitute a security under Maryland law, protects the right to self-custody of digital assets, and prohibits state agencies from requiring custodial relationships for digital asset holders.",
+      sponsor: "Del. Atterbeary (D)", sponsor_party: "D", sponsor_chamber: "House",
+      status: "Committee", status_class: "status-committee", status_date: "2026-03-15",
+      last_action: "Hearing held in Economic Matters", last_action_date: "2026-04-22",
+      topics: [{label:"Staking",cls:"staking"},{label:"Self-Custody",cls:"custody"}],
+      cb_stance: "Support", cb_tier: "1A",
+      url: "https://mgaleg.maryland.gov/2026RS/bills/hb/hb1268f.pdf"
+    },
+    {
+      bill_id: 1924782, state: "MD", bill_number: "SB 484", session: "2026",
+      title: "Stablecoin Issuance and Reserve Requirements Framework",
+      description: "Establishes a Maryland licensing framework for stablecoin issuers, including 1:1 reserve requirements, monthly attestation reporting, and consumer redemption protections. Coordinates with federal stablecoin framework under GENIUS Act.",
+      sponsor: "Sen. Rosapepe (D)", sponsor_party: "D", sponsor_chamber: "Senate",
+      status: "Committee", status_class: "status-committee", status_date: "2026-04-08",
+      last_action: "Senate Finance Committee hearing scheduled", last_action_date: "2026-05-06",
+      topics: [{label:"Stablecoin",cls:"stablecoin"}],
+      cb_stance: "Engage", cb_tier: "1A",
+      url: "https://mgaleg.maryland.gov/2026RS/bills/sb/sb0484f.pdf"
+    },
+    {
+      bill_id: 1921889, state: "MD", bill_number: "HB 525", session: "2026",
+      title: "Maryland Strategic Bitcoin Reserve Study",
+      description: "Establishes a task force to study the feasibility of allocating up to 1% of state pension fund and Rainy Day Fund assets to Bitcoin holdings, with a report due to the General Assembly by December 2026.",
+      sponsor: "Del. Hartman (R)", sponsor_party: "R", sponsor_chamber: "House",
+      status: "1st Chamber", status_class: "status-1st", status_date: "2026-02-20",
+      last_action: "Referred to Appropriations Committee", last_action_date: "2026-03-04",
+      topics: [{label:"Bitcoin",cls:"bitcoin"}],
+      cb_stance: "Support", cb_tier: "1B",
+      url: "https://mgaleg.maryland.gov/2026RS/bills/hb/hb0525f.pdf"
+    },
+    {
+      bill_id: 1923109, state: "MD", bill_number: "HB 891", session: "2026",
+      title: "Digital Asset Tax Treatment and Mining Income Clarification",
+      description: "Clarifies state income tax treatment of cryptocurrency mining rewards, staking yields, and digital asset transactions, aligning Maryland tax code with federal IRC §61 treatment.",
+      sponsor: "Del. Forbes (D)", sponsor_party: "D", sponsor_chamber: "House",
+      status: "1st Chamber", status_class: "status-1st", status_date: "2026-03-01",
+      last_action: "Ways and Means Committee hearing", last_action_date: "2026-04-15",
+      topics: [{label:"Tax",cls:"digital-assets"},{label:"Mining",cls:"bitcoin"}],
+      cb_stance: "Monitor", cb_tier: "2",
+      url: "https://mgaleg.maryland.gov/2026RS/bills/hb/hb0891f.pdf"
+    },
+    {
+      bill_id: 1925431, state: "MD", bill_number: "SB 712", session: "2026",
+      title: "Money Transmission Modernization Act: Digital Asset Provisions",
+      description: "Updates Maryland's money transmission statute to align with the Money Transmission Modernization Act (MTMA), explicitly addressing digital asset transmission and custody activities.",
+      sponsor: "Sen. Carozza (R)", sponsor_party: "R", sponsor_chamber: "Senate",
+      status: "Committee", status_class: "status-committee", status_date: "2026-04-12",
+      last_action: "Finance Committee work session", last_action_date: "2026-04-29",
+      topics: [{label:"Money Transmission",cls:"mt"},{label:"Digital Assets",cls:"digital-assets"}],
+      cb_stance: "Support", cb_tier: "1B",
+      url: "https://mgaleg.maryland.gov/2026RS/bills/sb/sb0712f.pdf"
+    },
+
+    // NEVADA
+    {
+      bill_id: 1991234, state: "NV", bill_number: "AB 12", session: "2025",
+      title: "Money Transmission and Virtual Currency Licensing Reform",
+      description: "Reforms Nevada's money transmission licensing framework to explicitly address virtual currency businesses, establishing tiered licensing based on transaction volume and consumer-facing activity.",
+      sponsor: "Asm. Yeager (D)", sponsor_party: "D", sponsor_chamber: "Assembly",
+      status: "Signed", status_class: "status-signed", status_date: "2025-06-12",
+      last_action: "Approved by Governor", last_action_date: "2025-06-12",
+      topics: [{label:"Money Transmission",cls:"mt"},{label:"Digital Assets",cls:"digital-assets"}],
+      cb_stance: "Implemented", cb_tier: "2",
+      url: "https://www.leg.state.nv.us/App/NELIS/REL/82nd2023/Bill/12"
+    },
+    {
+      bill_id: 1995678, state: "NV", bill_number: "SB 195", session: "2025",
+      title: "Digital Asset Custody and Trust Company Authority",
+      description: "Authorizes Nevada-chartered trust companies to provide digital asset custody services, establishes capital requirements, and coordinates oversight with the Nevada Financial Institutions Division.",
+      sponsor: "Sen. Cannizzaro (D)", sponsor_party: "D", sponsor_chamber: "Senate",
+      status: "2nd Chamber", status_class: "status-2nd", status_date: "2025-05-20",
+      last_action: "Passed Senate, in Assembly committee", last_action_date: "2025-06-05",
+      topics: [{label:"Custody",cls:"custody"},{label:"Banking",cls:"banking"}],
+      cb_stance: "Support", cb_tier: "1B",
+      url: "https://www.leg.state.nv.us/App/NELIS/REL/82nd2023/Bill/195"
+    },
+    {
+      bill_id: 1993456, state: "NV", bill_number: "AB 269", session: "2025",
+      title: "Stablecoin Regulatory Framework and Reserve Requirements",
+      description: "Creates a Nevada-specific stablecoin licensing regime for issuers operating in the state, with reserve audit requirements and consumer redemption guarantees aligned with federal frameworks.",
+      sponsor: "Asm. Anderson (R)", sponsor_party: "R", sponsor_chamber: "Assembly",
+      status: "Committee", status_class: "status-committee", status_date: "2025-04-18",
+      last_action: "Commerce Committee hearing", last_action_date: "2025-05-08",
+      topics: [{label:"Stablecoin",cls:"stablecoin"}],
+      cb_stance: "Engage", cb_tier: "1A",
+      url: "https://www.leg.state.nv.us/App/NELIS/REL/82nd2023/Bill/269"
+    },
+    {
+      bill_id: 1994890, state: "NV", bill_number: "SB 75", session: "2025",
+      title: "Blockchain Technology Innovation Zone Act",
+      description: "Establishes regulatory innovation zones in Nevada for blockchain and digital asset companies, providing temporary regulatory exemptions for qualifying businesses subject to oversight.",
+      sponsor: "Sen. Hammond (R)", sponsor_party: "R", sponsor_chamber: "Senate",
+      status: "1st Chamber", status_class: "status-1st", status_date: "2025-03-12",
+      last_action: "Senate Government Affairs hearing", last_action_date: "2025-04-02",
+      topics: [{label:"Innovation",cls:"digital-assets"}],
+      cb_stance: "Support", cb_tier: "2",
+      url: "https://www.leg.state.nv.us/App/NELIS/REL/82nd2023/Bill/75"
+    },
+    {
+      bill_id: 1996234, state: "NV", bill_number: "AB 415", session: "2025",
+      title: "Digital Asset Mining Operations: Energy and Tax Provisions",
+      description: "Establishes Nevada's framework for cryptocurrency mining operations, including energy disclosure requirements, sales tax treatment of mining equipment, and grid impact studies.",
+      sponsor: "Asm. Hafen (R)", sponsor_party: "R", sponsor_chamber: "Assembly",
+      status: "1st Chamber", status_class: "status-1st", status_date: "2025-04-25",
+      last_action: "Natural Resources Committee", last_action_date: "2025-05-15",
+      topics: [{label:"Mining",cls:"bitcoin"},{label:"Tax",cls:"digital-assets"}],
+      cb_stance: "Monitor", cb_tier: "3",
+      url: "https://www.leg.state.nv.us/App/NELIS/REL/82nd2023/Bill/415"
+    }
+  ];
+
+  let currentBillFilter = 'all';
+  let billSortKey = 'state';
+  let billSortAsc = true;
+
+  // ============================================================
+  // INITIAL DATA RENDERING
+  // ============================================================
+  function updateRecordCount() {
+    const total = legiscanBills.length;
+    document.getElementById('recordCount').textContent = `${total} Bills (Live Demo Data)`;
+    document.getElementById('totalBillsStat').textContent = total;
+    document.getElementById('pillCountAll').textContent = total;
+    document.getElementById('pillCountCA').textContent = legiscanBills.filter(b => b.state === 'CA').length;
+    document.getElementById('pillCountMD').textContent = legiscanBills.filter(b => b.state === 'MD').length;
+    document.getElementById('pillCountNV').textContent = legiscanBills.filter(b => b.state === 'NV').length;
+  }
+
+  function renderBillsTable() {
+    let filtered = currentBillFilter === 'all'
+      ? [...legiscanBills]
+      : legiscanBills.filter(b => b.state === currentBillFilter);
+
+    filtered.sort((a, b) => {
+      let av = a[billSortKey], bv = b[billSortKey];
+      if (typeof av === 'string') return billSortAsc ? av.localeCompare(bv) : bv.localeCompare(av);
+      return billSortAsc ? av - bv : bv - av;
+    });
+
+    const tbody = document.getElementById('billsTableBody');
+    if (filtered.length === 0) {
+      tbody.innerHTML = `<tr><td colspan="6"><div class="empty-state">No bills found for this filter.</div></td></tr>`;
+      return;
+    }
+
+    tbody.innerHTML = filtered.map(b => `
+      <tr onclick="openBillDetail(${b.bill_id})">
+        <td><strong>${b.state}</strong></td>
+        <td>
+          <span class="bill-cell-id">${b.bill_number}</span>
+          <span class="bill-cell-sponsor">${b.sponsor}</span>
+        </td>
+        <td><span class="status-tag ${b.status_class}">${b.status}</span></td>
+        <td class="bill-cell-title">${b.title}</td>
+        <td>${b.topics.map(t => `<span class="topic-tag ${t.cls}">${t.label}</span>`).join('')}</td>
+        <td style="font-size: 12px; color: var(--cb-gray-700);">
+          <div>${b.last_action_date}</div>
+          <div style="color: var(--cb-gray-500); margin-top: 2px;">${b.last_action}</div>
+        </td>
+      </tr>
+    `).join('');
+  }
+
+  function filterBills(state) {
+    currentBillFilter = state;
+    document.querySelectorAll('.state-pill').forEach(p => p.classList.remove('active'));
+    document.querySelector(`.state-pill[data-state="${state}"]`).classList.add('active');
+    renderBillsTable();
+  }
+
+  function sortBills(key) {
+    if (billSortKey === key) billSortAsc = !billSortAsc;
+    else { billSortKey = key; billSortAsc = true; }
+    renderBillsTable();
+  }
+
+  function openBillDetail(billId) {
+    const bill = legiscanBills.find(b => b.bill_id === billId);
+    if (!bill) return;
+    const stance = bill.cb_stance;
+    const stanceColor = stance === 'Support' || stance === 'Engage' ? 'var(--cb-green)'
+      : stance === 'Oppose' ? 'var(--cb-red)'
+      : 'var(--cb-gray-700)';
+
+    document.getElementById('billDetailContent').innerHTML = `
+      <div class="bill-detail-hero">
+        <button class="bill-detail-close" onclick="closeBillDetail()">×</button>
+        <div class="bill-detail-state">${stateData[bill.state]?.name || bill.state} · Session ${bill.session}</div>
+        <div class="bill-detail-id">${bill.bill_number}</div>
+        <div class="bill-detail-title">${bill.title}</div>
+        <div style="margin-top: 14px; display: flex; gap: 8px; flex-wrap: wrap;">
+          ${bill.topics.map(t => `<span class="topic-tag ${t.cls}" style="font-size: 11px; padding: 4px 10px;">${t.label}</span>`).join('')}
+          <span class="tier-badge ${'tier-' + bill.cb_tier.toLowerCase()}" style="font-size: 11px;">Tier ${bill.cb_tier}</span>
+        </div>
+      </div>
+      <div class="bill-detail-body">
+        <div class="detail-section">
+          <h3>⚡ AI Summary <span class="ai-badge">DEMO</span></h3>
+          <div class="ai-summary-box">
+            ${bill.description}
+            <div style="margin-top: 10px; padding-top: 10px; border-top: 1px solid rgba(0,82,255,0.2); font-size: 11px; color: var(--cb-gray-500);">
+              <strong>Production note:</strong> Live deployment will use Claude/Gemini to summarize the full bill text from LegiScan API. This demo shows the LegiScan-provided description.
+            </div>
+          </div>
+        </div>
+
+        <div class="detail-section">
+          <h3>Bill Metadata (from LegiScan)</h3>
+          <div class="detail-grid">
+            <div class="detail-card-mini">
+              <div class="detail-card-mini-label">Sponsor</div>
+              <div class="detail-card-mini-value">${bill.sponsor}</div>
+            </div>
+            <div class="detail-card-mini">
+              <div class="detail-card-mini-label">Chamber</div>
+              <div class="detail-card-mini-value">${bill.sponsor_chamber}</div>
+            </div>
+            <div class="detail-card-mini">
+              <div class="detail-card-mini-label">Current Status</div>
+              <div class="detail-card-mini-value"><span class="status-tag ${bill.status_class}">${bill.status}</span></div>
+            </div>
+            <div class="detail-card-mini">
+              <div class="detail-card-mini-label">Last Action</div>
+              <div class="detail-card-mini-value" style="font-size: 13px;">${bill.last_action}<br><span style="color: var(--cb-gray-500); font-size: 12px; font-weight: 400;">${bill.last_action_date}</span></div>
+            </div>
+          </div>
+        </div>
+
+        <div class="detail-section">
+          <h3>Coinbase Position (Team-Curated)</h3>
+          <div class="detail-grid">
+            <div class="detail-card-mini" style="background: ${stance==='Support'||stance==='Engage'?'rgba(0,135,90,0.08)':stance==='Oppose'?'rgba(207,32,47,0.08)':'var(--cb-gray-50)'};">
+              <div class="detail-card-mini-label">CB Stance</div>
+              <div class="detail-card-mini-value" style="color: ${stanceColor}; font-size: 18px;">${stance}</div>
+            </div>
+            <div class="detail-card-mini">
+              <div class="detail-card-mini-label">Engagement Tier</div>
+              <div class="detail-card-mini-value"><span class="tier-badge tier-${bill.cb_tier.toLowerCase()}" style="font-size: 14px;">Tier ${bill.cb_tier}</span></div>
+            </div>
+          </div>
+        </div>
+
+        <div class="detail-section">
+          <h3>External Links</h3>
+          <div style="font-size: 13px;">
+            <a href="${bill.url}" target="_blank" style="color: var(--cb-blue); text-decoration: none; font-weight: 600;">View on Official State Site →</a>
+            <span style="color: var(--cb-gray-500); margin: 0 12px;">·</span>
+            <span style="color: var(--cb-gray-500);">LegiScan Bill ID: ${bill.bill_id}</span>
+          </div>
+        </div>
+
+        <div style="display: flex; gap: 8px; padding-top: 16px; border-top: 1px solid var(--cb-gray-100);">
+          <button class="btn btn-primary">📝 Add to Briefing Book</button>
+          <button class="btn btn-secondary">⚡ Re-run AI Summary</button>
+          <button class="btn btn-secondary">🔔 Alert Team</button>
+        </div>
+      </div>
+    `;
+    document.getElementById('billDetailModal').classList.add('show');
+  }
+
+  function closeBillDetail() {
+    document.getElementById('billDetailModal').classList.remove('show');
+  }
+
+  function refreshData() {
+    document.getElementById('lastSync').textContent = 'Syncing…';
+    document.getElementById('syncTimeBills').textContent = 'Syncing…';
+    setTimeout(() => {
+      const now = new Date();
+      const ts = now.toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit' });
+      document.getElementById('lastSync').textContent = `Synced ${ts}`;
+      document.getElementById('syncTimeBills').textContent = `Last sync: ${ts}`;
+      // In production: actual fetch to LegiScan API or Apps Script endpoint
+    }, 800);
+  }
+
+  // ============================================================
+  // MAP RENDERING (preserved from prior version)
+  // ============================================================
+  function colorForVolume(c) {
+    if (c === 0) return '#F2F4F7';
+    if (c < 5) return '#E8F0FF';
+    if (c < 10) return '#B3CCFF';
+    if (c < 15) return '#4D85FF';
+    if (c < 25) return '#0052FF';
+    return '#0039B3';
+  }
+  function colorForTier(t) {
+    if (t === '1A') return '#CF202F';
+    if (t === '1B') return '#F5B82E';
+    if (t === '2')  return '#0052FF';
+    if (t === '3')  return '#8A919E';
+    return '#F2F4F7';
+  }
+  function isDarkBgVolume(c) { return c >= 15; }
+  function isDarkBgTier(t) { return t === '1A' || t === '2'; }
+  function tierLabel(t) {
+    if (t === '1A') return 'Tier 1A · Active Engagement';
+    if (t === '1B') return 'Tier 1B · High Priority';
+    if (t === '2')  return 'Tier 2 · Monitor Closely';
+    if (t === '3')  return 'Tier 3 · Awareness Only';
+    return 'Not Tiered';
+  }
+  function tierBadgeClass(t) { return t === 'none' ? 'tier-none' : `tier-${t.toLowerCase()}`; }
+
+  let currentMode = 'priority';
+  let mapDataReady = false;
+  const container = document.getElementById('usMapContainer');
+  const labelNudge = { FL:{x:25,y:10}, LA:{x:-8,y:-5}, MI:{x:0,y:-25}, ID:{x:-5,y:-15}, MD:{x:-8,y:-2} };
+  const VIEW_W = 960, VIEW_H = 540;
+  const INSET = { x: 20, y: 400, w: 200, h: 130 };
+
+  async function loadUSMap() {
+    try {
+      const url = 'https://cdn.jsdelivr.net/npm/us-atlas@3/states-10m.json';
+      const topoResp = await fetch(url);
+      if (!topoResp.ok) throw new Error('Failed to load US Atlas');
+      const topology = await topoResp.json();
+      await loadScript('https://cdnjs.cloudflare.com/ajax/libs/topojson/3.0.2/topojson.min.js');
+      const geojson = topojson.feature(topology, topology.objects.states);
+      renderGeoJSONMap(geojson);
+      mapDataReady = true;
+      renderRanking();
+      renderTierSummary();
+    } catch (err) {
+      console.warn('CDN map load failed:', err);
+      renderFallbackMap();
+    }
+  }
+
+  function loadScript(src) {
+    return new Promise((resolve, reject) => {
+      const s = document.createElement('script');
+      s.src = src; s.onload = resolve; s.onerror = reject;
+      document.head.appendChild(s);
+    });
+  }
+
+  const fipsToState = {
+    "01":"AL","02":"AK","04":"AZ","05":"AR","06":"CA","08":"CO","09":"CT","10":"DE","11":"DC","12":"FL",
+    "13":"GA","15":"HI","16":"ID","17":"IL","18":"IN","19":"IA","20":"KS","21":"KY","22":"LA","23":"ME",
+    "24":"MD","25":"MA","26":"MI","27":"MN","28":"MS","29":"MO","30":"MT","31":"NE","32":"NV","33":"NH",
+    "34":"NJ","35":"NM","36":"NY","37":"NC","38":"ND","39":"OH","40":"OK","41":"OR","42":"PA","44":"RI",
+    "45":"SC","46":"SD","47":"TN","48":"TX","49":"UT","50":"VT","51":"VA","53":"WA","54":"WV","55":"WI","56":"WY"
+  };
+
+  function renderGeoJSONMap(geojson) {
+    let minX = Infinity, minY = Infinity, maxX = -Infinity, maxY = -Infinity;
+    geojson.features.forEach(f => {
+      const id = String(f.id).padStart(2, '0');
+      const code = fipsToState[id];
+      if (!code || code === 'AK' || code === 'HI') return;
+      eachCoord(f.geometry, ([x, y]) => {
+        let [px, py] = projectAlbersBase(x, y);
+        if (px < minX) minX = px;
+        if (py < minY) minY = py;
+        if (px > maxX) maxX = px;
+        if (py > maxY) maxY = py;
+      });
+    });
+    const padding = 20;
+    const sx = (VIEW_W - padding * 2) / (maxX - minX);
+    const sy = (VIEW_H - padding * 2) / (maxY - minY);
+    const s = Math.min(sx, sy);
+    const tx = (VIEW_W - (maxX - minX) * s) / 2 - minX * s;
+    const ty = (VIEW_H - (maxY - minY) * s) / 2 - minY * s;
+    const paths = [];
+    const labelPositions = {};
+    geojson.features.forEach(f => {
+      const id = String(f.id).padStart(2, '0');
+      const code = fipsToState[id];
+      if (!code) return;
+      const data = stateData[code];
+      if (!data) return;
+      const fill = currentMode === 'volume' ? colorForVolume(data.count) : colorForTier(data.tier);
+      const d = geometryToPath(f.geometry, code, s, tx, ty);
+      const cx_cy = computeCentroid(f.geometry, code, s, tx, ty);
+      const nudge = labelNudge[code] || { x: 0, y: 0 };
+      labelPositions[code] = { x: cx_cy.x + nudge.x, y: cx_cy.y + nudge.y };
+      const liveClass = data.hasLiveData ? ' has-data' : '';
+      paths.push(`<path d="${d}" data-state="${code}" fill="${fill}" class="${liveClass.trim()}"></path>`);
+    });
+    const svgHTML = `
+      <svg viewBox="0 0 ${VIEW_W} ${VIEW_H}" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid meet">
+        <rect x="${INSET.x}" y="${INSET.y}" width="${INSET.w}" height="${INSET.h}" fill="#FAFBFC" stroke="#E8EBF0" stroke-width="1" stroke-dasharray="3,3" rx="6"/>
+        <text x="${INSET.x + 8}" y="${INSET.y + 14}" font-size="9" font-weight="600" fill="#8A919E">AK / HI Inset</text>
+        ${paths.join('')}
+      </svg>
+    `;
+    container.innerHTML = svgHTML;
+    renderLabels(labelPositions);
+    attachPathHandlers();
+  }
+
+  function eachCoord(geom, fn) {
+    if (geom.type === 'Polygon') geom.coordinates.forEach(ring => ring.forEach(fn));
+    else if (geom.type === 'MultiPolygon') geom.coordinates.forEach(poly => poly.forEach(ring => ring.forEach(fn)));
+  }
+
+  function projectAlbersBase(lon, lat) {
+    const lat0 = 38, lon0 = -96;
+    const phi1 = 29.5 * Math.PI / 180;
+    const phi2 = 45.5 * Math.PI / 180;
+    const phi0 = lat0 * Math.PI / 180;
+    const lam0 = lon0 * Math.PI / 180;
+    const phi = lat * Math.PI / 180;
+    const lam = lon * Math.PI / 180;
+    const n = (Math.sin(phi1) + Math.sin(phi2)) / 2;
+    const C = Math.cos(phi1) ** 2 + 2 * n * Math.sin(phi1);
+    const rho = Math.sqrt(C - 2 * n * Math.sin(phi)) / n;
+    const rho0 = Math.sqrt(C - 2 * n * Math.sin(phi0)) / n;
+    const theta = n * (lam - lam0);
+    const x = rho * Math.sin(theta);
+    const y = -(rho0 - rho * Math.cos(theta));
+    return [x, y];
+  }
+
+  function projectAKHI(lon, lat, code) {
+    if (code === 'AK') {
+      const akLonMin = -172, akLonMax = -130;
+      const akLatMin = 51, akLatMax = 72;
+      const fx = (lon - akLonMin) / (akLonMax - akLonMin);
+      const fy = (akLatMax - lat) / (akLatMax - akLatMin);
+      return [INSET.x + 8 + fx * (INSET.w * 0.55), INSET.y + 22 + fy * (INSET.h - 30)];
+    } else if (code === 'HI') {
+      const hiLonMin = -160.5, hiLonMax = -154;
+      const hiLatMin = 18.5, hiLatMax = 22.5;
+      const fx = (lon - hiLonMin) / (hiLonMax - hiLonMin);
+      const fy = (hiLatMax - lat) / (hiLatMax - hiLatMin);
+      return [INSET.x + INSET.w * 0.6 + fx * (INSET.w * 0.35), INSET.y + 40 + fy * (INSET.h - 60)];
+    }
+    return [0, 0];
+  }
+
+  function geometryToPath(geom, code, s, tx, ty) {
+    let d = '';
+    function ringToPath(ring) {
+      let r = '';
+      ring.forEach(([lon, lat], i) => {
+        let x, y;
+        if (code === 'AK' || code === 'HI') [x, y] = projectAKHI(lon, lat, code);
+        else { const [px, py] = projectAlbersBase(lon, lat); x = px * s + tx; y = py * s + ty; }
+        r += (i === 0 ? 'M' : 'L') + x.toFixed(1) + ',' + y.toFixed(1);
+      });
+      return r + 'Z';
+    }
+    if (geom.type === 'Polygon') geom.coordinates.forEach(ring => d += ringToPath(ring));
+    else if (geom.type === 'MultiPolygon') geom.coordinates.forEach(poly => poly.forEach(ring => d += ringToPath(ring)));
+    return d;
+  }
+
+  function computeCentroid(geom, code, s, tx, ty) {
+    let sumX = 0, sumY = 0, count = 0;
+    eachCoord(geom, ([lon, lat]) => {
+      let x, y;
+      if (code === 'AK' || code === 'HI') [x, y] = projectAKHI(lon, lat, code);
+      else { const [px, py] = projectAlbersBase(lon, lat); x = px * s + tx; y = py * s + ty; }
+      sumX += x; sumY += y; count++;
+    });
+    return { x: sumX / count, y: sumY / count };
+  }
+
+  function renderLabels(positions) {
+    container.querySelectorAll('.state-label-overlay').forEach(el => el.remove());
+    const svgEl = container.querySelector('svg');
+    if (!svgEl) return;
+    const rect = svgEl.getBoundingClientRect();
+    const scaleX = rect.width / VIEW_W;
+    const scaleY = rect.height / VIEW_H;
+    const labelsOn = document.getElementById('labelsToggle')?.classList.contains('on') !== false;
+    Object.entries(positions).forEach(([code, { x, y }]) => {
+      const data = stateData[code];
+      if (!data) return;
+      const dark = currentMode === 'volume' ? isDarkBgVolume(data.count) : isDarkBgTier(data.tier);
+      const labelBelow = currentMode === 'volume'
+        ? (data.count > 0 ? data.count : '')
+        : (data.tier !== 'none' ? data.tier : '');
+      const el = document.createElement('div');
+      el.className = 'state-label-overlay' + (dark ? ' dark' : '');
+      el.style.left = (x * scaleX) + 'px';
+      el.style.top = (y * scaleY) + 'px';
+      el.style.display = labelsOn ? '' : 'none';
+      el.innerHTML = `${code}${labelBelow !== '' ? `<span class="lbl-count">${labelBelow}</span>` : ''}`;
+      container.appendChild(el);
+    });
+  }
+
+  let resizeTimer;
+  window.addEventListener('resize', () => {
+    clearTimeout(resizeTimer);
+    resizeTimer = setTimeout(() => {
+      if (!mapDataReady) return;
+      const positions = {};
+      container.querySelectorAll('path').forEach(p => {
+        const bbox = p.getBBox();
+        const code = p.getAttribute('data-state');
+        const nudge = labelNudge[code] || { x: 0, y: 0 };
+        positions[code] = { x: bbox.x + bbox.width / 2 + nudge.x, y: bbox.y + bbox.height / 2 + nudge.y };
+      });
+      renderLabels(positions);
+    }, 150);
+  });
+
+  function attachPathHandlers() {
+    const tooltip = document.getElementById('mapTooltip');
+    const ttState = document.getElementById('ttState');
+    const ttCount = document.getElementById('ttCount');
+    const ttTier = document.getElementById('ttTier');
+    const ttTopic = document.getElementById('ttTopic');
+    container.querySelectorAll('path').forEach(path => {
+      path.addEventListener('mousemove', (e) => {
+        const code = path.getAttribute('data-state');
+        const data = stateData[code];
+        if (!data) return;
+        ttState.textContent = data.name;
+        ttCount.textContent = data.count;
+        ttTier.innerHTML = `<span class="tier-badge ${tierBadgeClass(data.tier)}">${data.tier === 'none' ? '—' : data.tier}</span>`;
+        const liveBadge = data.hasLiveData ? `<span class="tooltip-bills-pill">⚡ Live LegiScan data</span>` : '';
+        ttTopic.innerHTML = `Top: ${data.topTopic}${liveBadge ? '<br>' + liveBadge : ''}`;
+        tooltip.classList.add('show');
+        const cardRect = container.closest('.map-card').getBoundingClientRect();
+        let left = e.clientX - cardRect.left + 12;
+        let top = e.clientY - cardRect.top + 12;
+        if (left + 250 > cardRect.width) left = e.clientX - cardRect.left - 260;
+        if (top + 120 > cardRect.height) top = e.clientY - cardRect.top - 130;
+        tooltip.style.left = left + 'px';
+        tooltip.style.top = top + 'px';
+      });
+      path.addEventListener('mouseleave', () => tooltip.classList.remove('show'));
+      path.addEventListener('click', () => {
+        container.querySelectorAll('path').forEach(p => p.classList.remove('selected'));
+        path.classList.add('selected');
+        const code = path.getAttribute('data-state');
+        const data = stateData[code];
+        document.getElementById('selectedState').textContent = data.name;
+        if (data.hasLiveData) {
+          document.getElementById('selectedDetail').innerHTML = `${data.count} bills · ${tierLabel(data.tier)} · <strong style="color:#92400E;">⚡ ${legiscanBills.filter(b=>b.state===code).length} bills loaded from LegiScan.</strong> <a style="color:var(--cb-blue);cursor:pointer;text-decoration:underline;" onclick="filterBills('${code}');showView('bills-view');">View bills →</a>`;
+        } else {
+          document.getElementById('selectedDetail').textContent = `${data.count} bills · ${tierLabel(data.tier)} · Top topic: ${data.topTopic}.`;
+        }
+      });
+    });
+  }
+
+  function setMapMode(mode) {
+    currentMode = mode;
+    document.querySelectorAll('.mode-btn').forEach(b => b.classList.remove('active'));
+    document.querySelector(`.mode-btn[data-mode="${mode}"]`).classList.add('active');
+    document.querySelectorAll('.legend-mode').forEach(el => el.classList.remove('active'));
+    document.querySelector(`.legend-mode[data-mode="${mode}"]`).classList.add('active');
+    document.querySelectorAll('.panel-mode').forEach(el => el.classList.remove('active'));
+    document.querySelector(`.panel-mode[data-mode="${mode}"]`).classList.add('active');
+    if (mode === 'volume') {
+      document.getElementById('mapTitle').textContent = 'Bill Volume by State';
+      document.getElementById('mapSubtitle').textContent = 'Hover any state for detail · Gold border = live LegiScan data available';
+    } else {
+      document.getElementById('mapTitle').textContent = 'Engagement Priority by State';
+      document.getElementById('mapSubtitle').textContent = 'Beat the States priority tiering · Gold border = live LegiScan data available';
+    }
+    if (!mapDataReady) return;
+    container.querySelectorAll('path').forEach(p => {
+      const code = p.getAttribute('data-state');
+      const data = stateData[code];
+      if (data) p.setAttribute('fill', mode === 'volume' ? colorForVolume(data.count) : colorForTier(data.tier));
+    });
+    const positions = {};
+    container.querySelectorAll('path').forEach(p => {
+      const bbox = p.getBBox();
+      const code = p.getAttribute('data-state');
+      const nudge = labelNudge[code] || { x: 0, y: 0 };
+      positions[code] = { x: bbox.x + bbox.width / 2 + nudge.x, y: bbox.y + bbox.height / 2 + nudge.y };
+    });
+    renderLabels(positions);
+  }
+
+  function renderFallbackMap() {
+    container.innerHTML = `<div style="padding: 60px; text-align: center; color: var(--cb-gray-700);"><div style="font-size: 16px; font-weight: 600; margin-bottom: 8px;">Map asset failed to load</div></div>`;
+  }
+
+  function renderRanking() {
+    const ranked = Object.entries(stateData).filter(([_,d])=>d.count>0).sort((a,b)=>b[1].count-a[1].count).slice(0,10);
+    if (ranked.length === 0) return;
+    const max = ranked[0][1].count;
+    document.getElementById('rankingList').innerHTML = ranked.map(([code,d],i)=>`
+      <div class="ranking-row" onclick="selectStateFromPanel('${code}')">
+        <div class="ranking-rank">${i+1}</div>
+        <div><span class="ranking-state-name">${d.name}</span></div>
+        <div style="display:flex;align-items:center;gap:8px;">
+          <div class="ranking-bar" style="width:80px;"><div class="ranking-bar-fill" style="width:${(d.count/max)*100}%;background:${colorForVolume(d.count)};"></div></div>
+          <div class="ranking-count">${d.count}</div>
+        </div>
+      </div>`).join('');
+  }
+
+  function renderTierSummary() {
+    const groups = {'1A':[],'1B':[],'2':[],'3':[],'none':[]};
+    Object.entries(stateData).forEach(([code,d])=>groups[d.tier].push({code,...d}));
+    Object.values(groups).forEach(arr=>arr.sort((a,b)=>b.count-a.count));
+    document.getElementById('tierSummary').innerHTML = `
+      <div class="tier-summary-card tsc-1a"><div class="tier-label">Tier 1A</div><div class="tier-states">${groups['1A'].length}</div><div class="tier-desc">Active</div></div>
+      <div class="tier-summary-card tsc-1b"><div class="tier-label">Tier 1B</div><div class="tier-states">${groups['1B'].length}</div><div class="tier-desc">High</div></div>
+      <div class="tier-summary-card tsc-2"><div class="tier-label">Tier 2</div><div class="tier-states">${groups['2'].length}</div><div class="tier-desc">Monitor</div></div>
+      <div class="tier-summary-card tsc-3"><div class="tier-label">Tier 3</div><div class="tier-states">${groups['3'].length}</div><div class="tier-desc">Awareness</div></div>`;
+    function rl(key, id) {
+      const states = groups[key];
+      if (states.length === 0) {
+        document.getElementById(id).innerHTML = `<div style="font-size:12px;color:var(--cb-gray-500);padding:8px;">No states.</div>`;
+        return;
+      }
+      const max = Math.max(...states.map(s=>s.count),1);
+      document.getElementById(id).innerHTML = states.map((s,i)=>{
+        const livePill = s.hasLiveData ? ' <span style="background:var(--cb-yellow);color:var(--cb-gray-900);padding:1px 5px;border-radius:6px;font-size:9px;font-weight:700;margin-left:4px;">LIVE</span>' : '';
+        return `
+          <div class="ranking-row" onclick="selectStateFromPanel('${s.code}')">
+            <div class="ranking-rank">${i+1}</div>
+            <div><span class="ranking-state-name">${s.name}</span>${livePill}</div>
+            <div style="display:flex;align-items:center;gap:8px;">
+              <div class="ranking-bar" style="width:80px;"><div class="ranking-bar-fill" style="width:${(s.count/max)*100}%;background:${colorForTier(key)};"></div></div>
+              <div class="ranking-count" style="color:${colorForTier(key)};">${s.count}</div>
+            </div>
+          </div>`;
+      }).join('');
+    }
+    rl('1A','tier1aList');
+    rl('1B','tier1bList');
+    rl('2','tier2List');
+  }
+
+  function selectStateFromPanel(code) {
+    const path = container.querySelector(`path[data-state="${code}"]`);
+    if (path) path.dispatchEvent(new MouseEvent('click'));
+  }
+
+  function showView(id) {
+    document.querySelectorAll('.view-section').forEach(el => el.classList.remove('active'));
+    document.getElementById(id).classList.add('active');
+    document.querySelectorAll('.view-tab').forEach(el => el.classList.remove('active'));
+    const tabMap = {'map-view':0,'bills-view':1,'priorities-view':2};
+    if (tabMap[id] !== undefined) document.querySelectorAll('.view-tab')[tabMap[id]].classList.add('active');
+    window.scrollTo({top:0,behavior:'smooth'});
+  }
+
+  document.addEventListener('click', (e) => {
+    if (e.target.classList.contains('toggle-switch')) {
+      e.target.classList.toggle('on');
+      e.stopPropagation();
+      if (e.target.id === 'labelsToggle') {
+        const on = e.target.classList.contains('on');
+        container.querySelectorAll('.state-label-overlay').forEach(el => el.style.display = on ? '' : 'none');
+      }
+    }
+  });
+  document.querySelectorAll('#topicFilters .map-control-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      document.querySelectorAll('#topicFilters .map-control-btn').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+    });
+  });
+
+  // INITIAL LOAD
+  loadUSMap();
+  renderRanking();
+  renderTierSummary();
+  updateRecordCount();
+  renderBillsTable();
+</script>
+
+</body>
+</html>

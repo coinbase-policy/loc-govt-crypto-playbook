@@ -1,0 +1,282 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>USCM 2026 Best Practices Submission | Coinbase Policy</title>
+<style>
+  :root {
+    --cb-blue: #0052FF;
+    --cb-blue-dark: #0040CC;
+    --cb-dark: #0A0B0D;
+    --cb-gray: #5B616E;
+    --cb-bg: #FAFBFC;
+    --cb-light: #F5F8FF;
+    --cb-border: #E5E8EB;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Inter', sans-serif;
+    background: var(--cb-bg);
+    color: var(--cb-dark);
+    line-height: 1.6;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  /* Navigation */
+  .top-nav {
+    background: white;
+    border-bottom: 1px solid var(--cb-border);
+    padding: 16px 32px;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  .nav-brand { font-weight: 700; font-size: 18px; color: var(--cb-dark); display: flex; align-items: center; gap: 8px; cursor: pointer; text-decoration: none; }
+  .back-link {
+    color: var(--cb-gray);
+    text-decoration: none;
+    font-size: 14px;
+    font-weight: 600;
+    transition: color 0.2s;
+  }
+  .back-link:hover { color: var(--cb-blue); }
+
+  /* Main Container */
+  .container {
+    max-width: 1100px;
+    margin: 48px auto 80px;
+    padding: 0 24px;
+    display: grid;
+    grid-template-columns: 2fr 1fr;
+    gap: 48px;
+  }
+
+  /* Header Strip */
+  .eyebrow {
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 1px;
+    color: var(--cb-blue);
+    text-transform: uppercase;
+    margin-bottom: 16px;
+  }
+
+  /* Main Content Column */
+  .main-col h1 {
+    font-size: 36px;
+    font-weight: 700;
+    line-height: 1.2;
+    margin-bottom: 24px;
+    letter-spacing: -0.5px;
+  }
+  .overview {
+    font-size: 16px;
+    color: var(--cb-gray);
+    background: white;
+    padding: 24px;
+    border-left: 4px solid var(--cb-blue);
+    border-radius: 0 12px 12px 0;
+    margin-bottom: 40px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.02);
+  }
+  .use-case-divider {
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 2px;
+    color: var(--cb-gray);
+    text-transform: uppercase;
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    margin: 48px 0 24px;
+  }
+  .use-case-divider::after {
+    content: "";
+    flex: 1;
+    height: 1px;
+    background: var(--cb-border);
+  }
+  .main-col h2 {
+    font-size: 24px;
+    font-weight: 700;
+    margin-bottom: 16px;
+  }
+  .main-col p {
+    font-size: 16px;
+    color: var(--cb-gray);
+    margin-bottom: 16px;
+    line-height: 1.7;
+  }
+  .main-col .label {
+    font-weight: 600;
+    color: var(--cb-dark);
+  }
+
+  /* Photos */
+  .photos-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+    margin-top: 32px;
+  }
+  .photo-card {
+    background: white;
+    border: 1px solid var(--cb-border);
+    border-radius: 12px;
+    overflow: hidden;
+  }
+  .photo-placeholder {
+    background: var(--cb-border);
+    height: 180px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--cb-gray);
+    font-size: 32px;
+  }
+  .photo-caption {
+    padding: 16px;
+    font-size: 13px;
+    color: var(--cb-gray);
+    line-height: 1.5;
+  }
+
+  /* Sidebar */
+  .sidebar-col {
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+  }
+  .sidebar-card {
+    background: white;
+    border: 1px solid var(--cb-border);
+    border-radius: 16px;
+    padding: 32px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.02);
+  }
+  .sidebar-card h3 {
+    font-size: 16px;
+    font-weight: 700;
+    margin-bottom: 16px;
+    color: var(--cb-dark);
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .sidebar-card p, .sidebar-card li {
+    font-size: 14px;
+    color: var(--cb-gray);
+    line-height: 1.6;
+    margin-bottom: 12px;
+  }
+  .sidebar-card ul, .sidebar-card ol {
+    margin-left: 20px;
+    margin-bottom: 16px;
+  }
+  .sidebar-card li::marker { color: var(--cb-blue); font-weight: bold; }
+  
+  .contact-box {
+    background: var(--cb-light);
+    border-radius: 12px;
+    padding: 20px;
+    margin-top: 16px;
+  }
+  .contact-entry {
+    margin-bottom: 16px;
+    font-size: 14px;
+  }
+  .contact-entry:last-child { margin-bottom: 0; }
+  .contact-entry strong {
+    display: block;
+    color: var(--cb-dark);
+    margin-bottom: 4px;
+  }
+
+  @media (max-width: 900px) {
+    .container { grid-template-columns: 1fr; gap: 32px; }
+    .main-col h1 { font-size: 28px; }
+    .photos-row { grid-template-columns: 1fr; }
+  }
+</style>
+</head>
+<body>
+
+  <nav class="top-nav">
+    <a href="index.html" class="nav-brand"><span style="color: var(--cb-blue);">🛡️</span> Mayor Toolkit</a>
+    <a href="index.html" class="back-link">← Back to Toolkit</a>
+  </nav>
+
+  <div class="container">
+    
+    <div class="main-col">
+      <div class="eyebrow">USCM 2026 Best Practices Report</div>
+      <h1>Equipping Mayors with Crypto and Stablecoin Tools</h1>
+      
+      <div class="overview">
+        As mayors increasingly look to digital asset technology to solve municipal challenges, Coinbase serves as a trusted resource — providing research, education, and direct stablecoin infrastructure to support cities and their residents. Below are two examples showcasing real municipal impact.
+      </div>
+
+      <div class="use-case-divider">Use Case 1 · Baltimore, MD</div>
+
+      <h2>How Baltimore Is Using Blockchain to Revitalize Housing</h2>
+      <p><span class="label">Project Description:</span> The City of Baltimore has launched the nation's first municipal blockchain pilot to record vacant property deeds. Approved by the Board of Estimates in late 2023 as a three-year initiative, the project is led by City Solicitor Ebony Thompson under Mayor Brandon Scott's administration, with implementation by Medici Land Governance and support from the Baltimore City Law Department, Baltimore City Information Technology (BCIT), and the Department of Housing & Community Development (DHCD). The platform creates an immutable, searchable record of property ownership. Coinbase has supported this work by amplifying Baltimore's leadership in policymaker education forums and by connecting Baltimore's experience with mayors in other US cities exploring similar approaches.</p>
+      
+      <p><span class="label">Challenge:</span> Baltimore has approximately 13,600 vacant residential properties — roughly 7–8% of the city's total property inventory. These vacancies cost the city an estimated $100 million annually in lost tax revenue, alongside increased emergency services costs and the "contagion effect" of depressed neighboring property values. Reclaiming a vacant home is a legal marathon. Every time a property changes hands, a full title search is repeated, costing hundreds to thousands of dollars.</p>
+      
+      <p><span class="label">Impact:</span> Baltimore's blockchain platform creates a permanent "chain of custody" that eliminates redundant title searches, reducing fees for the municipality and homebuyers, and accelerating the return of vacant properties to the tax rolls. "By adopting blockchain technology for title searches, we are taking a significant step towards modernizing our real estate processes," said Mayor Brandon Scott. Coinbase recognizes Baltimore as a model for what's possible when a mayor's office, a forward-thinking legal team, and a trusted technology partner align around a clear municipal challenge.</p>
+
+      <div class="use-case-divider">Use Case 2 · Stablecoins Nationwide</div>
+
+      <h2>Coinbase Stablecoins for Remittances and Financial Inclusion</h2>
+      <p><span class="label">Project Description:</span> With the passage of the GENIUS Act in 2025, the United States now has the first comprehensive federal framework for regulated US-dollar stablecoins. Coinbase, in partnership with Circle, is a co-founder and issuer of USDC — a fully reserved, dollar-backed stablecoin used by millions of people globally for fast, low-cost payments and transfers. For mayors in cities with large immigrant and diaspora populations, Coinbase's stablecoin infrastructure offers a direct, constituent-facing tool to lower the cost of sending money home.</p>
+      
+      <p><span class="label">Challenge:</span> According to the FDIC, 4.2% of US households are entirely unbanked and 14.2% are underbanked. Working families pay a "poverty tax" through check cashers, payday lenders, and high-cost remittance services. Americans spend an estimated $12 billion annually on remittance fees, with the global average cost of sending $200 home still exceeding 6%.</p>
+      
+      <p><span class="label">Impact:</span> Coinbase Institute research documents that migrant workers are increasingly using USDC and similar regulated stablecoins to send money home in seconds, at a fraction of traditional fees, with 24/7 availability. For mayors, this is an immediately actionable tool — Coinbase products are already live in all 50 states, with no municipal spending required.</p>
+
+    <div class="sidebar-col">
+      <div class="sidebar-card">
+        <h3>💡 What Coinbase Offers Mayors</h3>
+        <p>Coinbase supports mayors and city governments through three direct channels:</p>
+        <ol>
+          <li><strong>Education & Briefings:</strong> Free Crypto 101 sessions for mayors, city council, and senior staff.</li>
+          <li><strong>Research & Resources:</strong> Free, non-technical primers designed to help mayors evaluate digital asset opportunities.</li>
+          <li><strong>Peer Connections:</strong> We convene mayors, City Solicitors, and innovation officers across cities to share what's working.</li>
+        </ol>
+      </div>
+
+      <div class="sidebar-card">
+        <h3>🎯 General Tips</h3>
+        <ul>
+          <li><strong>Lead with constituent benefit.</strong> "Faster vacant property turnaround" builds broader coalitions than "blockchain."</li>
+          <li><strong>Find your champion.</strong> Success requires a senior official with the legal authority to drive implementation.</li>
+          <li><strong>Use regulated partners.</strong> Cities should require partners to meet federal standards for US-dollar stablecoins.</li>
+        </ul>
+      </div>
+
+      <div class="sidebar-card">
+        <h3>📬 Contacts</h3>
+        <p style="margin-bottom: 0;">Coinbase education, research, and convening services are provided at no cost to participating cities.</p>
+        <div class="contact-box">
+          <div class="contact-entry">
+            <strong>Coinbase US Policy Team</strong>
+            Katy Ann Searcy<br>
+            <span style="color: var(--cb-gray); font-size: 13px;">Manager, US Policy</span><br>
+            <a href="mailto:kathrynann.searcy@coinbase.com" style="color: var(--cb-blue); text-decoration: none;">kathrynann.searcy@coinbase.com</a>
+          </div>
+          <div class="contact-entry">
+            <strong>City of Baltimore</strong>
+            Ebony M. Thompson<br>
+            <span style="color: var(--cb-gray); font-size: 13px;">City Solicitor</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</body>
+</html>

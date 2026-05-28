@@ -1220,7 +1220,7 @@ async function showScorecard() {
   const email = document.getElementById('userEmail').value.trim();
   const benchmark = getBenchmark(score);
   
-  // 1. Bundle the payload
+  // 1. Bundle the payload for Formspree
   const payload = {
     Name: fullName,
     Title: title,
@@ -1232,24 +1232,24 @@ async function showScorecard() {
     Answers: answers
   };
 
-  // 2. PASTE YOUR GOOGLE SCRIPT URL HERE
-  const scriptURL = "https://script.google.com/a/macros/coinbase.com/s/AKfycbxCmhMnWOPWclTj5YFu9e_qkPNG7sWK2mkw2MDJb2NeeRinwQdXtXw0QPPXRj3PK0Ga/exec";
+  // 2. PASTE YOUR FORMSPREE URL HERE
+  const formspreeURL = "https://formspree.io/f/mpqnkgwo";
 
-  // 3. Send it to Google Sheets
+  // 3. Send it securely to Formspree
   try {
-    if (scriptURL !== "https://script.google.com/a/macros/coinbase.com/s/AKfycbxCmhMnWOPWclTj5YFu9e_qkPNG7sWK2mkw2MDJb2NeeRinwQdXtXw0QPPXRj3PK0Ga/exec") {
-      fetch(scriptURL, {
+    if (formspreeURL.includes("formspree.io")) {
+      await fetch(formspreeURL, {
         method: "POST",
-        mode: "no-cors",
         headers: {
-          "Content-Type": "text/plain" 
+          "Content-Type": "application/json",
+          "Accept": "application/json"
         },
         body: JSON.stringify(payload)
       });
-      console.log("Data sent to Google Sheets!");
+      console.log("Data successfully sent to Formspree!");
     }
   } catch (error) {
-    console.error("Background data tracking error:", error);
+    console.error("Formspree tracking error:", error);
   }
 
   // 4. Proceed to show the scorecard immediately

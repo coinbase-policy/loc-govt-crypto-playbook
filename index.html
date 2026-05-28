@@ -459,7 +459,6 @@
   /* ===== ENHANCED PROGRESS BAR ===== */
   .progress-wrap { margin-bottom: 32px; }
 
-  /* Stepped dimension indicator */
   .dim-steps {
     display: grid;
     grid-template-columns: repeat(4, 1fr);
@@ -508,7 +507,6 @@
     transition: color 0.3s ease;
     letter-spacing: 0.2px;
   }
-  /* Completed state */
   .dim-step.completed .dim-step-circle {
     background: var(--cb-success);
     border-color: var(--cb-success);
@@ -516,7 +514,6 @@
   }
   .dim-step.completed .dim-step-label { color: var(--cb-success); }
   .dim-step.completed .dim-step-line { background: var(--cb-success); }
-  /* Active state */
   .dim-step.active .dim-step-circle {
     background: var(--cb-blue);
     border-color: var(--cb-blue);
@@ -543,9 +540,7 @@
     color: var(--cb-blue);
     font-weight: 600;
   }
-  .progress-meta .time-icon {
-    font-size: 14px;
-  }
+  .progress-meta .time-icon { font-size: 14px; }
   .progress-bar {
     height: 6px;
     background: var(--cb-border);
@@ -852,6 +847,7 @@
         <h4>Get In Touch</h4>
         <a href="mailto:policy@coinbase.com">policy@coinbase.com</a>
         <a href="https://www.standwithcrypto.org" target="_blank">Stand With Crypto</a>
+        <a href="mailto:press@coinbase.com">Press Inquiries</a>
       </div>
     </div>
     <div class="footer-legal">© 2026 Coinbase Inc. · This toolkit is for informational purposes only and does not constitute legal, financial, or investment advice.</div>
@@ -1012,7 +1008,6 @@ const questions = [
   { dim: "Civic Innovation", text: "What's the single biggest barrier to moving forward on digital asset policy?", helper: "There's no wrong answer — knowing the real obstacle is half the battle.", type: "single", options: [{ label: "Political risk or optics", score: 2 }, { label: "Lack of staff bandwidth or expertise", score: 3 }, { label: "Regulatory uncertainty at state or federal level", score: 4 }, { label: "No barrier — we just need a roadmap", score: 5 }]}
 ];
 
-// Dimension config — order matters for the stepper
 const dimensions = [
   { name: "Payments & Treasury", short: "Payments" },
   { name: "Regulatory Posture", short: "Regulatory" },
@@ -1026,7 +1021,6 @@ const tierContent = {
   run: { title: "🏃 Run Tier", className: "tier-run", description: "You're a national leader. The opportunity now is to convert that leadership into platform — hosting other mayors, shaping federal conversations, and pioneering the next-generation use cases.", moves: [{ title: "Explore a stablecoin treasury framework", body: "We'll share a model framework reviewed by 3 leading municipal finance officers." }, { title: "Host a peer convening", body: "We'll co-host a regional summit of crypto-forward mayors with you as the headline." }, { title: "Build a national platform", body: "Speaking slots at Consensus, US Conference of Mayors, and Coinbase events." }] }
 };
 
-// Define the champions object for the scorecard dynamically
 const champions = {
   crawl: {
     name: "Mayor Brandon Scott — Baltimore, MD",
@@ -1109,16 +1103,9 @@ function startAssessment() {
   window.scrollTo({ top: 0, behavior: 'smooth' });
 }
     
-// Build the dimension stepper based on current question's dimension
 function renderDimSteps() {
   const currentDim = questions[currentQ].dim;
   const currentDimIndex = dimensions.findIndex(d => d.name === currentDim);
-
-  const dimProgress = dimensions.map(d => {
-    const dimQs = questions.map((q, i) => ({ ...q, idx: i })).filter(q => q.dim === d.name);
-    const answered = dimQs.filter(q => answers[q.idx] !== null && !(Array.isArray(answers[q.idx]) && answers[q.idx].length === 0));
-    return { total: dimQs.length, completed: answered.length };
-  });
 
   const stepsHTML = dimensions.map((d, i) => {
     let stateClass = '';
@@ -1218,20 +1205,60 @@ function calculateScore() {
 function getTier(score) { if (score <= 33) return 'crawl'; if (score <= 66) return 'walk'; return 'run'; }
 function getBenchmark(score) { if (score < 20) return 5; if (score < 40) return 25; if (score < 55) return 50; if (score < 70) return 70; if (score < 85) return 85; return 95; }
 
-function showScorecard() {
+async function showScorecard() {
   const score = calculateScore();
   const tier = getTier(score);
   userTier = tier;
   const tierData = tierContent[tier];
   const champ = champions[tier];
-  const name = document.getElementById('userName').value.trim().split(' ')[0];
+  
+  // Grab the user data
+  const fullName = document.getElementById('userName').value.trim();
+  const title = document.getElementById('userTitle').value.trim();
   const jur = document.getElementById('userJurisdiction').value.trim();
+  const pop = document.getElementById('userPopulation').value;
+  const email = document.getElementById('userEmail').value.trim();
   const benchmark = getBenchmark(score);
   
+  // 1. Bundle the payload
+  const payload = {
+    Name: fullName,
+    Title: title,
+    Jurisdiction: jur,
+    Population: pop,
+    Email: email,
+    FinalScore: score,
+    AssignedTier: tier,
+    Answers: answers
+  };
+
+  // 2. PASTE YOUR GOOGLE SCRIPT URL HERE
+  const scriptURL = "https://script.google.com/a/macros/coinbase.com/s/AKfycbxCmhMnWOPWclTj5YFu9e_qkPNG7sWK2mkw2MDJb2NeeRinwQdXtXw0QPPXRj3PK0Ga/exec";
+
+  // 3. Send it to Google Sheets
+  try {
+    if (scriptURL !== "https://script.google.com/a/macros/coinbase.com/s/AKfycbxCmhMnWOPWclTj5YFu9e_qkPNG7sWK2mkw2MDJb2NeeRinwQdXtXw0QPPXRj3PK0Ga/exec") {
+      fetch(scriptURL, {
+        method: "POST",
+        mode: "no-cors",
+        headers: {
+          "Content-Type": "text/plain" 
+        },
+        body: JSON.stringify(payload)
+      });
+      console.log("Data sent to Google Sheets!");
+    }
+  } catch (error) {
+    console.error("Background data tracking error:", error);
+  }
+
+  // 4. Proceed to show the scorecard immediately
   document.getElementById('screen-assessment').classList.add('hidden');
   document.getElementById('screen-scorecard').classList.remove('hidden');
   
-  document.getElementById('scorecardGreeting').textContent = `Nice work, ${name}.`;
+  const firstName = fullName.split(' ')[0] || "there";
+  
+  document.getElementById('scorecardGreeting').textContent = `Nice work, ${firstName}.`;
   document.getElementById('scorecardJurisdiction').textContent = `Here's where ${jur} stands today.`;
   document.getElementById('finalScore').textContent = score;
   document.getElementById('finalTier').textContent = tierData.title;

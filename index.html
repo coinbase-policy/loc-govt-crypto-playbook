@@ -1220,39 +1220,43 @@ async function showScorecard() {
   const email = document.getElementById('userEmail').value.trim();
   const benchmark = getBenchmark(score);
   
-  // 1. Bundle the payload for Formspree
+  // 1. Bundle the payload (Keys made lowercase and array flattened to text)
   const payload = {
-    Name: fullName,
-    Title: title,
-    Jurisdiction: jur,
-    Population: pop,
-    Email: email,
-    FinalScore: score,
-    AssignedTier: tier,
-    Answers: answers
+    name: fullName,
+    title: title,
+    jurisdiction: jur,
+    population: pop,
+    email: email, // Lowercase 'email' helps Formspree automatically flag it as the reply-to address
+    final_score: score,
+    assigned_tier: tier,
+    answers: JSON.stringify(answers) // Flattens the array into a simple text string so Formspree doesn't crash
   };
 
-  // 2. PASTE YOUR FORMSPREE URL HERE
   const formspreeURL = "https://formspree.io/f/mpqnkgwo";
 
-  // 3. Send it securely to Formspree
+  // 2. Send it securely to Formspree with better error logging
   try {
-    if (formspreeURL.includes("formspree.io")) {
-      await fetch(formspreeURL, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          "Accept": "application/json"
-        },
-        body: JSON.stringify(payload)
-      });
+    const response = await fetch(formspreeURL, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        "Accept": "application/json"
+      },
+      body: JSON.stringify(payload)
+    });
+    
+    if (response.ok) {
       console.log("Data successfully sent to Formspree!");
+    } else {
+      // If Formspree rejects it, this will tell us exactly why in the browser console
+      const errText = await response.text();
+      console.error("Formspree rejected the submission:", errText);
     }
   } catch (error) {
-    console.error("Formspree tracking error:", error);
+    console.error("Network error when contacting Formspree:", error);
   }
 
-  // 4. Proceed to show the scorecard immediately
+  // 3. Proceed to show the scorecard immediately
   document.getElementById('screen-assessment').classList.add('hidden');
   document.getElementById('screen-scorecard').classList.remove('hidden');
   

@@ -269,7 +269,6 @@
   .feature-title { font-size: 20px; font-weight: 700; margin-bottom: 8px; }
   .feature-desc { font-size: 15px; color: var(--cb-gray); line-height: 1.6; }
 
-  /* --- CHAMPIONS SECTION (DARK MODE) --- */
   .champions-section { background: var(--cb-dark); color: white; padding: 80px 24px; }
   .champions-section .section-h2 { color: white; }
   .champions-section .section-sub { color: rgba(255,255,255,0.7); }
@@ -422,16 +421,6 @@
     margin: 0 auto;
   }
 
-  .placeholder-note {
-    background: #FEF3C7;
-    border-left: 3px solid var(--cb-warn);
-    padding: 8px 12px;
-    font-size: 12px;
-    color: #78350F;
-    margin-top: 12px;
-    border-radius: 4px;
-  }
-
   .hidden { display: none; }
   .step-nav { font-size: 13px; color: var(--cb-gray); margin-bottom: 8px; font-weight: 500; }
 
@@ -456,7 +445,6 @@
   .field-group { margin-bottom: 18px; }
   .required { color: #DC2626; }
 
-  /* ===== ENHANCED PROGRESS BAR ===== */
   .progress-wrap { margin-bottom: 32px; }
 
   .dim-steps {
@@ -667,14 +655,13 @@
     <div class="hero">
       <span class="hero-eyebrow">Local Government Crypto Toolkit</span>
       <h1>The crypto playbook<br>for <span class="accent">your jurisdiction.</span></h1>
-      <p class="hero-subtitle">Explore how you can leverage crypto powered technology to address local challenges, make government more efficient and responsive, and improve every day life for your residents. A free, tier-matched toolkit for mayors and the staff who advise them — built by Coinbase's US Policy team.</p>
+      <p class="hero-subtitle">A free, tier-matched toolkit for mayors, governors, and the staff who advise them — built by Coinbase's US Policy team.</p>
       <div class="hero-ctas">
         <button class="btn btn-large" onclick="goToAssessment()">Take the 5-Minute Assessment →</button>
         <button class="btn btn-secondary btn-large" onclick="scrollToSection('library-preview')">Browse Resources</button>
       </div>
     </div>
     <div class="city-dots" id="cityDots"></div>
-    <div class="city-label" id="cityLabel">Atlanta, GA</div>
   </section>
 
   <section class="hero-stats">
@@ -685,10 +672,6 @@
       <div class="hero-stat"><span class="hero-stat-num">$25B+</span><div class="hero-stat-label">In US crypto economic activity annually</div><div class="hero-stat-source">Source TBD</div></div>
     </div>
   </section>
-
-  <div style="background: white; padding: 8px 24px; text-align: center;">
-    <div class="placeholder-note" style="display: inline-block; max-width: 720px;">⚠️ Hero stats and city background images are placeholders for prototype review. Final figures + Coinbase-licensed imagery pending.</div>
-  </div>
 
   <section class="section-block" style="background: white;">
     <div class="section-inner">
@@ -713,7 +696,7 @@
         
         <div style="font-size: 17px; color: rgba(255,255,255,0.8); text-align: left; max-width: 800px; margin: 0 auto; line-height: 1.6; display: flex; flex-direction: column; gap: 16px;">
           <p>Crypto is no longer a niche issue. 52 million Americans own digital assets, every state has considered some form of digital asset legislation, and a new generation of mayors is turning crypto leadership into jobs, headlines, and constituent services.</p>
-          <p>Cities that lead on digital asset policy are positioning themselves to win the next decade of innovation, talent, and economic growth. Coinbase’s Mayor toolkit is built to make that leadership easier by showcasing ways to leverage blockchain technology for your city.</p>
+          <p>Cities and states that lead on digital asset policy are positioning themselves to win the next decade of innovation, talent, and economic growth. Coinbase’s Mayor toolkit is built to make that leadership easier by showcasing ways to leverage blockchain technology for your city.</p>
           <p>The Mayor Crypto Toolkit is a free resource designed to meet your office wherever you are — whether you're crypto-curious or already leading the country.</p>
         </div>
       </div>
@@ -741,17 +724,17 @@
                 <h4 style="font-size: 18px; margin-bottom: 24px; color: white; font-weight: 700; border-bottom: 2px solid rgba(255,255,255,0.1); padding-bottom: 16px;">Impact & Scale</h4>
                 
                 <div class="champion-tile-stat" style="border-top: none; padding-top: 0; padding-bottom: 20px; margin-bottom: 0;">
-                  <span class="champion-tile-stat-num" style="font-size: 36px; min-width: 80px;">1st</span>
+                  <span class="champion-tile-stat-num" style="font-size: 36px; min-width: 100px; flex-shrink: 0;">1st</span>
                   <span class="champion-tile-stat-label" style="font-size: 14px; line-height: 1.5;">Municipal blockchain pilot to record property deeds in the US</span>
                 </div>
                 
                 <div class="champion-tile-stat" style="padding-top: 20px; padding-bottom: 20px; margin-bottom: 0;">
-                  <span class="champion-tile-stat-num" style="font-size: 36px; min-width: 80px;">13.6K</span>
+                  <span class="champion-tile-stat-num" style="font-size: 36px; min-width: 100px; flex-shrink: 0;">13.6K</span>
                   <span class="champion-tile-stat-label" style="font-size: 14px; line-height: 1.5;">Vacant residential properties addressed (~7–8% of city inventory)</span>
                 </div>
                 
                 <div class="champion-tile-stat" style="padding-top: 20px; padding-bottom: 0;">
-                  <span class="champion-tile-stat-num" style="font-size: 36px; min-width: 80px;">$100M</span>
+                  <span class="champion-tile-stat-num" style="font-size: 36px; min-width: 100px; flex-shrink: 0;">$100M</span>
                   <span class="champion-tile-stat-label" style="font-size: 14px; line-height: 1.5;">Estimated annual lost tax revenue recovered</span>
                 </div>
               </div>
@@ -772,9 +755,6 @@
             </div> 
             
           </div>
-        </div>
-        <div style="text-align: center; margin-top: 40px;">
-          <div class="placeholder-note" style="display: inline-block; max-width: 720px; background: rgba(254, 243, 199, 0.1); border-left: 3px solid var(--cb-warn); color: #FCD34D;">⚠️ Champion stats are verified based on the latest USCM Submission. Final legal approval pending.</div>
         </div>
       </div>
     </div>
@@ -815,13 +795,10 @@
         <button class="btn btn-secondary" style="margin-top: 24px;" onclick="window.open('StateScan-v2.html', '_blank')">Launch StateScan Tracker ⚡</button>
       </div>
       <div class="library-preview-grid">
-        <div class="lib-cat-card" onclick="window.location.href='library.html'"><div class="lib-cat-icon">📘</div><div class="lib-cat-name">Foundational Briefings</div><div class="lib-cat-count">3 resources</div></div>
-        <div class="lib-cat-card" onclick="window.location.href='library.html'"><div class="lib-cat-icon">💸</div><div class="lib-cat-name">Payments & Remittances</div><div class="lib-cat-count">7 resources</div></div>
-        <div class="lib-cat-card" onclick="window.location.href='library.html'"><div class="lib-cat-icon">🏗️</div><div class="lib-cat-name">Housing & Infrastructure</div><div class="lib-cat-count">3 resources</div></div>
-        <div class="lib-cat-card" onclick="window.location.href='library.html'"><div class="lib-cat-icon">🏪</div><div class="lib-cat-name">Small Business & Economy</div><div class="lib-cat-count">3 resources</div></div>
-        <div class="lib-cat-card" onclick="window.location.href='library.html'"><div class="lib-cat-icon">🔍</div><div class="lib-cat-name">Fact-Finding & Research</div><div class="lib-cat-count">6 resources</div></div>
-        <div class="lib-cat-card" onclick="window.location.href='library.html'"><div class="lib-cat-icon">🎥</div><div class="lib-cat-name">Video & Media</div><div class="lib-cat-count">1 resource</div></div>
-        <div class="lib-cat-card" onclick="window.location.href='library.html'" style="grid-column: span 2; background: var(--cb-blue); color: white; border-color: var(--cb-blue);"><div class="lib-cat-icon">→</div><div class="lib-cat-name">View All Resources</div><div class="lib-cat-count" style="color: rgba(255,255,255,0.8);">Browse the full library</div></div>
+        <div class="lib-cat-card" onclick="window.location.href='library.html'"><div class="lib-cat-icon">🌱</div><div class="lib-cat-name">Crawl Tier</div><div class="lib-cat-count">Foundational Resources</div></div>
+        <div class="lib-cat-card" onclick="window.location.href='library.html'"><div class="lib-cat-icon">🚶</div><div class="lib-cat-name">Walk Tier</div><div class="lib-cat-count">Building Frameworks</div></div>
+        <div class="lib-cat-card" onclick="window.location.href='library.html'"><div class="lib-cat-icon">🏃</div><div class="lib-cat-name">Run Tier</div><div class="lib-cat-count">Advanced Implementation</div></div>
+        <div class="lib-cat-card" onclick="window.location.href='library.html'" style="background: var(--cb-blue); color: white; border-color: var(--cb-blue);"><div class="lib-cat-icon">→</div><div class="lib-cat-name">View All Resources</div><div class="lib-cat-count" style="color: rgba(255,255,255,0.8);">Browse the full library</div></div>
       </div>
     </div>
   </section>
@@ -938,7 +915,6 @@
         <div class="stat"><span class="stat-num">$100M</span><span class="stat-label">Estimated Revenue</span></div>
       </div>
       <p class="champion-quote" id="championQuote">"By adopting blockchain technology for title searches, we are taking a significant step towards modernizing our real estate processes."</p>
-      <div class="placeholder-note">⚠️ Hero stats are verified based on the latest USCM Submission. Final legal approval pending.</div>
     </div>
   </div>
   <div class="cta-card">
@@ -946,7 +922,8 @@
     <p>We've curated 20+ playbooks, model policies, and case studies based on your readiness level.</p>
     <div class="cta-row">
       <button class="btn" onclick="window.location.href='library.html'">Explore Resource Library →</button>
-      <button class="btn btn-outline-dark">Book a Briefing</button>
+      <button class="btn btn-outline-dark" onclick="window.open('https://calendar.google.com/calendar/appointments/schedules/YOUR_LINK_HERE', '_blank')">Book a Briefing</button>
+      <button class="btn btn-outline-dark" onclick="window.location.href='mailto:policy@coinbase.com?subject=Mayor Toolkit Inquiry'">Email Our Team</button>
     </div>
   </div>
   <div style="text-align: center; margin-top: 20px;">
@@ -956,11 +933,13 @@
 
 <script>
 const cityImages = [
-  { url: "https://images.unsplash.com/photo-1575917649705-5b59aaa12e6b?auto=format&fit=crop&w=2000&q=80", label: "Atlanta, GA" },
-  { url: "https://images.unsplash.com/photo-1605723517503-3cadb5818a0c?auto=format&fit=crop&w=2000&q=80", label: "Miami, FL" },
-  { url: "https://images.unsplash.com/photo-1572898664290-cb1d2f7e5cf3?auto=format&fit=crop&w=2000&q=80", label: "Cincinnati, OH" },
-  { url: "https://images.unsplash.com/photo-1558697698-9300a84ee63e?auto=format&fit=crop&w=2000&q=80", label: "Phoenix, AZ" },
-  { url: "https://images.unsplash.com/photo-1496588152823-86ff7695e68f?auto=format&fit=crop&w=2000&q=80", label: "New York, NY" }
+  { url: "images/gov_toolkit_img1.jpg"},
+  { url: "images/gov_toolkit_img2.jpg"},
+  { url: "images/gov_toolkit_img3.jpg"},
+  { url: "images/gov_toolkit_img4.jpg"},
+  { url: "images/gov_toolkit_img5.jpg"},
+  { url: "images/gov_toolkit_img6.jpg"},
+  { url: "images/gov_toolkit_img7.jpg"}
 ];
 
 function initHeroCarousel() {
@@ -988,7 +967,6 @@ function initHeroCarousel() {
 function setActiveCity(index) {
   document.querySelectorAll('.hero-bg-img').forEach((el, i) => el.classList.toggle('active', i === index));
   document.querySelectorAll('.city-dot').forEach((el, i) => el.classList.toggle('active', i === index));
-  document.getElementById('cityLabel').textContent = cityImages[index].label;
 }
 
 document.addEventListener('DOMContentLoaded', initHeroCarousel);
@@ -1226,10 +1204,10 @@ async function showScorecard() {
     title: title,
     jurisdiction: jur,
     population: pop,
-    email: email, // Lowercase 'email' helps Formspree automatically flag it as the reply-to address
+    email: email, 
     final_score: score,
     assigned_tier: tier,
-    answers: JSON.stringify(answers) // Flattens the array into a simple text string so Formspree doesn't crash
+    answers: JSON.stringify(answers) 
   };
 
   const formspreeURL = "https://formspree.io/f/mpqnkgwo";
@@ -1248,7 +1226,6 @@ async function showScorecard() {
     if (response.ok) {
       console.log("Data successfully sent to Formspree!");
     } else {
-      // If Formspree rejects it, this will tell us exactly why in the browser console
       const errText = await response.text();
       console.error("Formspree rejected the submission:", errText);
     }

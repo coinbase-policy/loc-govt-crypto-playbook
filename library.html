@@ -11,6 +11,7 @@
     --cb-gray: #5B616E;
     --cb-bg: #FAFBFC;
     --cb-border: #E5E8EB;
+    --cb-light: #F5F8FF;
   }
   * { box-sizing: border-box; margin: 0; padding: 0; }
   body {
@@ -41,25 +42,47 @@
   /* Library Container */
   .container { max-width: 1200px; margin: 48px auto 80px; padding: 0 24px; }
   
-  .header { text-align: center; margin-bottom: 48px; }
-  .header h1 { font-size: 36px; font-weight: 700; margin-bottom: 16px; }
+  .header { text-align: center; margin-bottom: 40px; }
+  .header h1 { font-size: 36px; font-weight: 700; margin-bottom: 16px; letter-spacing: -0.5px; }
   .header p { font-size: 18px; color: var(--cb-gray); max-width: 600px; margin: 0 auto; }
 
   /* Filters */
-  .lib-filters {
+  .filter-section {
+    background: white;
+    border: 1px solid var(--cb-border);
+    border-radius: 16px;
+    padding: 24px;
+    margin-bottom: 40px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.02);
+  }
+  .filter-row {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    margin-bottom: 16px;
+    flex-wrap: wrap;
+  }
+  .filter-row:last-child { margin-bottom: 0; }
+  .filter-label {
+    font-size: 13px;
+    font-weight: 700;
+    color: var(--cb-gray);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    min-width: 120px;
+  }
+  .filter-buttons {
     display: flex;
     flex-wrap: wrap;
-    gap: 12px;
-    margin-bottom: 32px;
-    justify-content: center;
+    gap: 8px;
   }
   .lib-filter {
-    background: white;
+    background: var(--cb-bg);
     border: 1px solid var(--cb-border);
     padding: 8px 16px;
     border-radius: 20px;
-    font-size: 14px;
-    font-weight: 500;
+    font-size: 13px;
+    font-weight: 600;
     color: var(--cb-gray);
     cursor: pointer;
     transition: all 0.2s;
@@ -74,7 +97,7 @@
   /* Grid */
   .lib-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+    grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
     gap: 24px;
   }
   .resource-card {
@@ -89,10 +112,10 @@
   }
   .resource-card:hover {
     border-color: var(--cb-blue);
-    box-shadow: 0 4px 12px rgba(0,82,255,0.1);
+    box-shadow: 0 8px 24px rgba(0,82,255,0.08);
     transform: translateY(-2px);
   }
-  .resource-icon { font-size: 24px; margin-bottom: 16px; }
+  .resource-icon { font-size: 28px; margin-bottom: 16px; }
   .resource-type { font-size: 11px; font-weight: 700; letter-spacing: 1px; color: var(--cb-gray); text-transform: uppercase; margin-bottom: 8px; }
   .resource-title { font-size: 18px; font-weight: 700; color: var(--cb-dark); margin-bottom: 12px; line-height: 1.3; }
   .resource-desc { font-size: 14px; color: var(--cb-gray); margin-bottom: 24px; flex-grow: 1; }
@@ -102,17 +125,42 @@
     align-items: center;
     border-top: 1px solid var(--cb-border);
     padding-top: 16px;
-    font-size: 13px;
-    color: var(--cb-gray);
   }
   .resource-tag {
-    background: var(--cb-light);
-    color: var(--cb-blue);
-    padding: 4px 8px;
+    display: inline-block;
+    padding: 4px 10px;
     border-radius: 4px;
-    font-weight: 600;
+    font-weight: 700;
     font-size: 11px;
     text-transform: uppercase;
+    letter-spacing: 0.5px;
+  }
+  .cat-tag {
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--cb-gray);
+  }
+  
+  /* Tier Colors */
+  .tag-crawl { background: #FEF3C7; color: #92400E; }
+  .tag-walk { background: #DBEAFE; color: #1E40AF; }
+  .tag-run { background: #D1FAE5; color: #065F46; }
+
+  /* Empty State */
+  .empty-state {
+    grid-column: 1 / -1;
+    text-align: center;
+    padding: 60px 20px;
+    background: white;
+    border: 1px solid var(--cb-border);
+    border-radius: 12px;
+    color: var(--cb-gray);
+  }
+
+  @media (max-width: 768px) {
+    .header h1 { font-size: 28px; }
+    .lib-grid { grid-template-columns: 1fr; }
+    .filter-label { min-width: 100%; margin-bottom: 8px; }
   }
 </style>
 </head>
@@ -129,41 +177,72 @@
   <div class="container">
     <div class="header">
       <h1>Resource Library</h1>
-      <p>Browse our curated collection of briefings, research, and use cases designed specifically for local government leaders.</p>
+      <p>Browse our curated collection of briefings, research, and use cases. Filter by your readiness tier or by specific policy topics.</p>
     </div>
 
-    <div class="lib-filters" id="libFilters">
+    <div class="filter-section">
+      <div class="filter-row">
+        <div class="filter-label">Readiness Tier:</div>
+        <div class="filter-buttons" id="tierFilters">
+          <!-- Tier filters injected by JS -->
+        </div>
       </div>
+      <div class="filter-row">
+        <div class="filter-label">Policy Topic:</div>
+        <div class="filter-buttons" id="catFilters">
+          <!-- Category filters injected by JS -->
+        </div>
+      </div>
+    </div>
 
     <div class="lib-grid" id="libGrid">
-      </div>
+      <!-- Cards injected by JS -->
+    </div>
   </div>
 
   <script>
+    // Full resource list with both Categories and Tiers
     const resources = [
-      { tier: "essential", icon: "🌟", type: "Briefing", time: "15 min read", title: "Equipping Local Governments with Digital Assets and Blockchain", desc: "As cities and states grapple with the challenges of the 21st century, digital assets and blockchain offer innovative solutions.", category: "Foundational Briefings", url: "https://coinbase.com/public-policy/advocacy/documents/equipping-local-governments-with-crypto-and-blockchain" },
-      { tier: "essential", icon: "🎓", type: "Briefing", time: "20 min read", title: "Crypto and Local Government", desc: "A foundational explainer on how crypto and blockchain technologies offer local governments new tools to operate more transparently.", category: "Foundational Briefings", url: "https://www.coinbase.com/en-de/public-policy/advocacy/documents/crypto-and-local-government" },
-      { tier: "essential", icon: "🏢", type: "Briefing", time: "10 min read", title: "What are Decentralized Autonomous Organizations (DAOs)", desc: "DAOs are blockchain-based entities governed by smart contracts and collective decision-making.", category: "Foundational Briefings", url: "https://www.coinbase.com/en-gb/public-policy/advocacy/documents/what-are-daos" },
-      { tier: "essential", icon: "💸", type: "Briefing", time: "12 min read", title: "Micro-Access and Micropayments", desc: "Much of the internet is structured around a simple constraint: payments are too expensive to be small.", category: "Payments & Remittances", url: "https://www.coinbase.com/en-gb/public-policy/advocacy/documents/micro-access-and-micropayments" },
-      { tier: "essential", icon: "🌍", type: "Briefing", time: "15 min read", title: "Crypto and Remittances", desc: "Remittances are a vital lifeline for millions around the world, but face high fees and delays.", category: "Payments & Remittances", url: "https://www.coinbase.com/en-gb/public-policy/advocacy/documents/crypto-and-remittances" },
-      { tier: "essential", icon: "📄", type: "Research", time: "25 min read", title: "Remittances Research Paper", desc: "A research paper explaining how crypto transfers can disrupt traditional remittance methods.", category: "Payments & Remittances", url: "https://assets.ctfassets.net/c5bd0wqjc7v0/PX9g1EAnHHAKlCg1zHCwX/f9dde71351c320a15fc4eecff83e14e8/Crypto___Remittances.pdf" },
-      { tier: "essential", icon: "📈", type: "Research", time: "20 min read", title: "The Rise of Stablecoin Remittances", desc: "We examine Coinbase data and find that among crypto transfers that are possible remittances, stablecoins are playing an even greater role.", category: "Payments & Remittances", url: "https://assets.ctfassets.net/o10es7wu5gm1/62qK9UDQ7OleJUjPhYVBNB/7ac6fd079fbf94f350b52b83abcf26cb/POL25_StablecoinRemittances_V2.pdf" },
-      { tier: "essential", icon: "💳", type: "Briefing", time: "15 min read", title: "Crypto and Payments", desc: "Crypto streamlines payments by enabling faster, cheaper, and borderless transactions.", category: "Payments & Remittances", url: "https://www.coinbase.com/en-gb/public-policy/advocacy/documents/micro-access-and-micropayments" },
-      { tier: "essential", icon: "🌐", type: "Policy", time: "18 min read", title: "Stablecoins and the G20 Cross-border Payments Roadmap", desc: "The G20's cross-border payment reforms are falling short. Stablecoins already deliver faster, cheaper, and more transparent payments.", category: "Payments & Remittances", url: "https://ctf-images-01.coinbasecdn.net/o10es7wu5gm1/4AzxMLmPCBvOSPDV1IEAII/1a361fcc151d2d0ef109b8d81169a1fe/Let%C3%A2__s_embrace_stablecoins_and_achieve_the_goals_of_the_G20_Cross-border_Payments_Roadmap__1_.pdf" },
-      { tier: "essential", icon: "🏦", type: "Briefing", time: "15 min read", title: "Onchain Lending", desc: "Among blockchain's most compelling applications is onchain lending, where smart contracts create a transparent alternative to conventional credit.", category: "Payments & Remittances", url: "https://www.coinbase.com/en-gb/public-policy/advocacy/documents/micro-access-and-micropayments" },
-      { tier: "essential", icon: "🏗️", type: "Briefing", time: "15 min read", title: "Decentralized Physical Infrastructure (DePIN)", desc: "DePIN networks use blockchain technology to coordinate and incentivize the development of real-world infrastructure.", category: "Housing & Infrastructure", url: "https://www.coinbase.com/en-gb/public-policy/advocacy/documents/what-is-decentralized-physical-infrastructure" },
-      { tier: "essential", icon: "🏠", type: "Briefing", time: "12 min read", title: "Crypto and Housing", desc: "Crypto and blockchain technologies offer the housing sector powerful tools to increase security, transparency, and efficiency.", category: "Housing & Infrastructure", url: "https://www.coinbase.com/en-gb/public-policy/advocacy/documents/crypto-and-housing" },
-      { tier: "essential", icon: "🔑", type: "Briefing", time: "14 min read", title: "Housing and Financial Inclusion", desc: "Blockchain offers an opportunity to modernize housing finance in ways that improve efficiency.", category: "Housing & Infrastructure", url: "https://www.coinbase.com/en-gb/public-policy/advocacy/documents/blockchain-housing-and-financial-inclusion" },
-      { tier: "essential", icon: "💼", type: "Briefing", time: "12 min read", title: "Blockchain Infrastructure for Independent Workers", desc: "Blockchain-based payment and recordkeeping rails offer a solution by providing portable financial infrastructure.", category: "Small Business & Economy", url: "https://www.coinbase.com/en-nl/public-policy/advocacy/documents/blockchain-infrastructure-for-independent-workers" },
-      { tier: "essential", icon: "🏪", type: "Briefing", time: "15 min read", title: "Crypto and Small Business", desc: "Crypto and blockchain technology offer tools that can enable faster, cheaper, and more inclusive financial infrastructure for SMBs.", category: "Small Business & Economy", url: "https://www.coinbase.com/en-gb/public-policy/advocacy/documents/crypto-and-small-business" },
-      { tier: "essential", icon: "🤝", type: "Briefing", time: "15 min read", title: "Empowering small businesses with digital assets", desc: "We explore how these technologies can make processes more accessible for small businesses.", category: "Small Business & Economy", url: "https://www.coinbase.com/en-gb/public-policy/advocacy/documents/crypto-and-small-business" },
-      { tier: "essential", icon: "⚖️", type: "Mythbusting", time: "10 min read", title: "Crypto and Financial Inclusion", desc: "Crypto and blockchain are driving financial inclusion by empowering unbanked and underbanked Americans.", category: "Fact-Finding & Research", url: "https://www.coinbase.com/en-gb/public-policy/advocacy/documents/fact-finding-crypto-and-financial-inclusion" },
-      { tier: "essential", icon: "🛡️", type: "Mythbusting", time: "10 min read", title: "Crypto and Illicit Finance", desc: "Crypto and blockchain can enhance financial security through transparent, traceable systems.", category: "Fact-Finding & Research", url: "https://www.coinbase.com/en-gb/public-policy/advocacy/documents/fact-finding-crypto-and-illicit-finance" },
-      { tier: "essential", icon: "🇺🇸", type: "Mythbusting", time: "10 min read", title: "Crypto and Americans", desc: "Crypto owners represent a diverse range of backgrounds—and these Americans call for clearer digital asset regulations.", category: "Fact-Finding & Research", url: "https://www.coinbase.com/en-gb/public-policy/advocacy/documents/fact-finding-crypto-and-americans?bypass_cache=1&preview=true" },
-      { tier: "essential", icon: "⚡", type: "Mythbusting", time: "10 min read", title: "Crypto and Energy", desc: "Crypto and blockchain technology can advance sustainable finance by incentivizing renewable energy projects.", category: "Fact-Finding & Research", url: "https://www.coinbase.com/en-gb/public-policy/advocacy/documents/fact-finding-crypto-and-energy" },
-      { tier: "essential", icon: "🔒", type: "Mythbusting", time: "10 min read", title: "Crypto and Consumer Protection", desc: "User-friendly platforms and clear regulations can enhance consumer protection by making digital assets safer.", category: "Fact-Finding & Research", url: "https://www.coinbase.com/en-gb/public-policy/advocacy/documents/fact-finding-crypto-and-consumer-protection" },
-      { tier: "essential", icon: "🕵️", type: "Research", time: "20 min read", title: "Zero Knowledge Proofs for the Bank Secrecy Act", desc: "ZKPs can preserve the integrity of financial compliance while dramatically improving privacy.", category: "Fact-Finding & Research", url: "https://assets.ctfassets.net/o10es7wu5gm1/6nQhqXCNlCFuwAiZ2acLTV/22cb8aa803581459c50622308cfdfa03/CBI_primer_ZKP_for_BSA.pdf" },
-      { tier: "essential", icon: "🎥", type: "Video", time: "Various", title: "Coinbase Crypto University", desc: "Crypto University is on a mission to let the world onchain and crypto forward through education.", category: "Video & Media", url: "https://www.coinbase.com/en-gb/public-policy/advocacy/documents/fact-finding-crypto-and-financial-inclusion" }
+      // FOUNDATIONAL BRIEFINGS
+      { tier: "crawl", tagClass: "tag-crawl", icon: "🌟", type: "Briefing", title: "Equipping Local Governments with Digital Assets and Blockchain", desc: "As cities and states grapple with the challenges of the 21st century, digital assets and blockchain offer innovative solutions.", category: "Foundational Briefings", url: "https://coinbase.com/public-policy/advocacy/documents/equipping-local-governments-with-crypto-and-blockchain" },
+      { tier: "crawl", tagClass: "tag-crawl", icon: "🎓", type: "Briefing", title: "Crypto and Local Government", desc: "A foundational explainer on how crypto and blockchain technologies offer local governments new tools to operate more transparently.", category: "Foundational Briefings", url: "https://www.coinbase.com/en-de/public-policy/advocacy/documents/crypto-and-local-government" },
+      { tier: "run", tagClass: "tag-run", icon: "🏢", type: "Briefing", title: "What are Decentralized Autonomous Organizations (DAOs)", desc: "DAOs are blockchain-based entities governed by smart contracts and collective decision-making.", category: "Foundational Briefings", url: "https://www.coinbase.com/en-gb/public-policy/advocacy/documents/what-are-daos" },
+      
+      // PAYMENTS & REMITTANCES
+      { tier: "walk", tagClass: "tag-walk", icon: "💸", type: "Briefing", title: "Micro-Access and Micropayments", desc: "Much of the internet is structured around a simple constraint: payments are too expensive to be small.", category: "Payments & Remittances", url: "https://www.coinbase.com/en-gb/public-policy/advocacy/documents/micro-access-and-micropayments" },
+      { tier: "walk", tagClass: "tag-walk", icon: "🌍", type: "Briefing", title: "Crypto and Remittances", desc: "Remittances are a vital lifeline for millions around the world, but face high fees and delays.", category: "Payments & Remittances", url: "https://www.coinbase.com/en-gb/public-policy/advocacy/documents/crypto-and-remittances" },
+      { tier: "walk", tagClass: "tag-walk", icon: "📄", type: "Research", title: "Remittances Research Paper", desc: "A research paper explaining how crypto transfers can disrupt traditional remittance methods.", category: "Payments & Remittances", url: "https://assets.ctfassets.net/c5bd0wqjc7v0/PX9g1EAnHHAKlCg1zHCwX/f9dde71351c320a15fc4eecff83e14e8/Crypto___Remittances.pdf" },
+      { tier: "walk", tagClass: "tag-walk", icon: "💳", type: "Briefing", title: "Crypto and Payments", desc: "Crypto streamlines payments by enabling faster, cheaper, and borderless transactions.", category: "Payments & Remittances", url: "https://www.coinbase.com/en-gb/public-policy/advocacy/documents/micro-access-and-micropayments" },
+      { tier: "run", tagClass: "tag-run", icon: "📈", type: "Research", title: "The Rise of Stablecoin Remittances", desc: "We examine Coinbase data and find that among crypto transfers that are possible remittances, stablecoins are playing an even greater role.", category: "Payments & Remittances", url: "https://assets.ctfassets.net/o10es7wu5gm1/62qK9UDQ7OleJUjPhYVBNB/7ac6fd079fbf94f350b52b83abcf26cb/POL25_StablecoinRemittances_V2.pdf" },
+      { tier: "run", tagClass: "tag-run", icon: "🌐", type: "Policy", title: "Stablecoins and the G20 Cross-border Payments Roadmap", desc: "The G20's cross-border payment reforms are falling short. Stablecoins already deliver faster, cheaper, and more transparent payments.", category: "Payments & Remittances", url: "https://ctf-images-01.coinbasecdn.net/o10es7wu5gm1/4AzxMLmPCBvOSPDV1IEAII/1a361fcc151d2d0ef109b8d81169a1fe/Let%C3%A2__s_embrace_stablecoins_and_achieve_the_goals_of_the_G20_Cross-border_Payments_Roadmap__1_.pdf" },
+      { tier: "run", tagClass: "tag-run", icon: "🏦", type: "Briefing", title: "Onchain Lending", desc: "Among blockchain's most compelling applications is onchain lending, where smart contracts create a transparent alternative to conventional credit.", category: "Payments & Remittances", url: "https://www.coinbase.com/en-gb/public-policy/advocacy/documents/micro-access-and-micropayments" },
+      
+      // HOUSING & INFRASTRUCTURE
+      { tier: "walk", tagClass: "tag-walk", icon: "🏠", type: "Briefing", title: "Crypto and Housing", desc: "Crypto and blockchain technologies offer the housing sector powerful tools to increase security, transparency, and efficiency.", category: "Housing & Infrastructure", url: "https://www.coinbase.com/en-gb/public-policy/advocacy/documents/crypto-and-housing" },
+      { tier: "walk", tagClass: "tag-walk", icon: "🔑", type: "Briefing", title: "Housing and Financial Inclusion", desc: "Blockchain offers an opportunity to modernize housing finance in ways that improve efficiency.", category: "Housing & Infrastructure", url: "https://www.coinbase.com/en-gb/public-policy/advocacy/documents/blockchain-housing-and-financial-inclusion" },
+      { tier: "run", tagClass: "tag-run", icon: "🏗️", type: "Briefing", title: "Decentralized Physical Infrastructure (DePIN)", desc: "DePIN networks use blockchain technology to coordinate and incentivize the development of real-world infrastructure.", category: "Housing & Infrastructure", url: "https://www.coinbase.com/en-gb/public-policy/advocacy/documents/what-is-decentralized-physical-infrastructure" },
+      
+      // SMALL BUSINESS & ECONOMY
+      { tier: "walk", tagClass: "tag-walk", icon: "💼", type: "Briefing", title: "Blockchain Infrastructure for Independent Workers", desc: "Blockchain-based payment and recordkeeping rails offer a solution by providing portable financial infrastructure.", category: "Small Business & Economy", url: "https://www.coinbase.com/en-nl/public-policy/advocacy/documents/blockchain-infrastructure-for-independent-workers" },
+      { tier: "walk", tagClass: "tag-walk", icon: "🏪", type: "Briefing", title: "Crypto and Small Business", desc: "Crypto and blockchain technology offer tools that can enable faster, cheaper, and more inclusive financial infrastructure for SMBs.", category: "Small Business & Economy", url: "https://www.coinbase.com/en-gb/public-policy/advocacy/documents/crypto-and-small-business" },
+      { tier: "walk", tagClass: "tag-walk", icon: "🤝", type: "Briefing", title: "Empowering small businesses with digital assets", desc: "We explore how these technologies can make processes more accessible for small businesses.", category: "Small Business & Economy", url: "https://www.coinbase.com/en-gb/public-policy/advocacy/documents/crypto-and-small-business" },
+      
+      // FACT-FINDING & RESEARCH
+      { tier: "crawl", tagClass: "tag-crawl", icon: "🇺🇸", type: "Mythbusting", title: "Crypto and Americans", desc: "Crypto owners represent a diverse range of backgrounds—and these Americans call for clearer digital asset regulations.", category: "Fact-Finding & Research", url: "https://www.coinbase.com/en-gb/public-policy/advocacy/documents/fact-finding-crypto-and-americans" },
+      { tier: "crawl", tagClass: "tag-crawl", icon: "⚖️", type: "Mythbusting", title: "Crypto and Financial Inclusion", desc: "Crypto and blockchain are driving financial inclusion by empowering unbanked and underbanked Americans.", category: "Fact-Finding & Research", url: "https://www.coinbase.com/en-gb/public-policy/advocacy/documents/fact-finding-crypto-and-financial-inclusion" },
+      { tier: "crawl", tagClass: "tag-crawl", icon: "⚡", type: "Mythbusting", title: "Crypto and Energy", desc: "Crypto and blockchain technology can advance sustainable finance by incentivizing renewable energy projects.", category: "Fact-Finding & Research", url: "https://www.coinbase.com/en-gb/public-policy/advocacy/documents/fact-finding-crypto-and-energy" },
+      { tier: "crawl", tagClass: "tag-crawl", icon: "🔒", type: "Mythbusting", title: "Crypto and Consumer Protection", desc: "User-friendly platforms and clear regulations can enhance consumer protection by making digital assets safer.", category: "Fact-Finding & Research", url: "https://www.coinbase.com/en-gb/public-policy/advocacy/documents/fact-finding-crypto-and-consumer-protection" },
+      { tier: "walk", tagClass: "tag-walk", icon: "🛡️", type: "Mythbusting", title: "Crypto and Illicit Finance", desc: "Crypto and blockchain can enhance financial security through transparent, traceable systems.", category: "Fact-Finding & Research", url: "https://www.coinbase.com/en-gb/public-policy/advocacy/documents/fact-finding-crypto-and-illicit-finance" },
+      { tier: "run", tagClass: "tag-run", icon: "🕵️", type: "Research", title: "Zero Knowledge Proofs for the Bank Secrecy Act", desc: "ZKPs can preserve the integrity of financial compliance while dramatically improving privacy.", category: "Fact-Finding & Research", url: "https://assets.ctfassets.net/o10es7wu5gm1/6nQhqXCNlCFuwAiZ2acLTV/22cb8aa803581459c50622308cfdfa03/CBI_primer_ZKP_for_BSA.pdf" },
+      
+      // VIDEO & MEDIA
+      { tier: "crawl", tagClass: "tag-crawl", icon: "🎥", type: "Video", title: "Coinbase Crypto University", desc: "Crypto University is on a mission to let the world onchain and crypto forward through education.", category: "Video & Media", url: "https://www.coinbase.com/en-gb/public-policy/advocacy/documents/fact-finding-crypto-and-financial-inclusion" }
+    ];
+
+    const tiers = [
+      { id: "crawl", label: "Crawl Tier" },
+      { id: "walk", label: "Walk Tier" },
+      { id: "run", label: "Run Tier" }
     ];
 
     const categories = [
@@ -175,30 +254,71 @@
       "Video & Media"
     ];
 
-    function renderLibrary(filter = 'All') {
-      const filtersDiv = document.getElementById('libFilters');
-      filtersDiv.innerHTML = `<div class="lib-filter ${filter === 'All' ? 'active' : ''}" onclick="renderLibrary('All')">All Categories</div>` + 
-        categories.map(c => `<div class="lib-filter ${filter === c ? 'active' : ''}" onclick="renderLibrary('${c}')">${c}</div>`).join('');
+    let activeTier = 'All';
+    let activeCategory = 'All';
 
+    function setTier(tier) {
+      activeTier = tier;
+      renderFilters();
+      renderGrid();
+    }
+
+    function setCategory(cat) {
+      activeCategory = cat;
+      renderFilters();
+      renderGrid();
+    }
+
+    function renderFilters() {
+      // Render Tier Row
+      const tierDiv = document.getElementById('tierFilters');
+      tierDiv.innerHTML = `<div class="lib-filter ${activeTier === 'All' ? 'active' : ''}" onclick="setTier('All')">All Levels</div>` + 
+        tiers.map(t => `<div class="lib-filter ${activeTier === t.id ? 'active' : ''}" onclick="setTier('${t.id}')">${t.label}</div>`).join('');
+
+      // Render Category Row
+      const catDiv = document.getElementById('catFilters');
+      catDiv.innerHTML = `<div class="lib-filter ${activeCategory === 'All' ? 'active' : ''}" onclick="setCategory('All')">All Topics</div>` + 
+        categories.map(c => `<div class="lib-filter ${activeCategory === c ? 'active' : ''}" onclick="setCategory('${c}')">${c}</div>`).join('');
+    }
+
+    function renderGrid() {
       const gridDiv = document.getElementById('libGrid');
-      const filtered = filter === 'All' ? resources : resources.filter(r => r.category === filter);
       
-      gridDiv.innerHTML = filtered.map(r => `
+      const filtered = resources.filter(r => {
+        const matchesTier = activeTier === 'All' || r.tier === activeTier;
+        const matchesCategory = activeCategory === 'All' || r.category === activeCategory;
+        return matchesTier && matchesCategory;
+      });
+      
+      if (filtered.length === 0) {
+        gridDiv.innerHTML = `
+          <div class="empty-state">
+            <h3>No resources found</h3>
+            <p>Try adjusting your filters to see more results.</p>
+          </div>
+        `;
+        return;
+      }
+
+      gridDiv.innerHTML = filtered.map(r => {
+        const tagLabel = tiers.find(t => t.id === r.tier).label;
+        return `
         <div class="resource-card" onclick="window.open('${r.url}', '_blank')">
           <div class="resource-icon">${r.icon}</div>
           <div class="resource-type">${r.type}</div>
           <div class="resource-title">${r.title}</div>
           <div class="resource-desc">${r.desc}</div>
           <div class="resource-meta">
-            <span class="resource-tag">${r.category}</span>
-            <span>${r.time}</span>
+            <span class="resource-tag ${r.tagClass}">${tagLabel}</span>
+            <span class="cat-tag">${r.category}</span>
           </div>
         </div>
-      `).join('');
+      `}).join('');
     }
 
     // Initialize the library on page load
-    renderLibrary();
+    renderFilters();
+    renderGrid();
   </script>
 </body>
 </html>

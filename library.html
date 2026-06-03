@@ -254,9 +254,11 @@
       "Video & Media"
     ];
 
-    let activeTier = 'All';
+// Check the URL for a tier parameter, default to 'All' if none exists
+    const urlParams = new URLSearchParams(window.location.search);
+    let activeTier = urlParams.get('tier') || 'All';
     let activeCategory = 'All';
-
+    
     function setTier(tier) {
       activeTier = tier;
       renderFilters();
